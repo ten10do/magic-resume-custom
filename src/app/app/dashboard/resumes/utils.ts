@@ -1,6 +1,7 @@
 import { generateUUID } from "@/utils/uuid";
 import { initialResumeState } from "@/config/initialResumeData";
 import { DEFAULT_TEMPLATES } from "@/config";
+import type { PhotoConfig } from "@/types/resume";
 
 export const escapeHtml = (value: string) =>
   value
@@ -59,7 +60,12 @@ export const extractJsonContent = (content: string) => {
   throw new Error("Invalid AI JSON content");
 };
 
-export const createResumeFromAIResult = (result: any, fileName: string) => {
+export const createResumeFromAIResult = (
+  result: any,
+  fileName: string,
+  photo = "",
+  photoConfig?: Partial<PhotoConfig>
+) => {
   const now = new Date().toISOString();
   const id = generateUUID();
 
@@ -77,6 +83,17 @@ export const createResumeFromAIResult = (result: any, fileName: string) => {
     createdAt: now,
     updatedAt: now,
     templateId: DEFAULT_TEMPLATES[0]?.id,
+    globalSettings: {
+      ...initialResumeState.globalSettings,
+      baseFontSize: 14,
+      pagePadding: 20,
+      paragraphSpacing: 4,
+      lineHeight: 1.35,
+      sectionSpacing: 6,
+      headerSize: 17,
+      subheaderSize: 14,
+      autoOnePage: true,
+    },
     basic: {
       ...initialResumeState.basic,
       name: toString(result?.basic?.name),
@@ -87,7 +104,12 @@ export const createResumeFromAIResult = (result: any, fileName: string) => {
       employementStatus: toString(result?.basic?.employementStatus),
       birthDate: toString(result?.basic?.birthDate),
       customFields: [],
-      photo: "",
+      photo,
+      photoConfig: {
+        ...initialResumeState.basic.photoConfig,
+        ...photoConfig,
+        visible: true,
+      },
       githubKey: "",
       githubUseName: "",
       githubContributionsVisible: false,

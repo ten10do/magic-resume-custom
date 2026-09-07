@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Layout, Type, SpaceIcon, Palette, Zap } from "lucide-react";
+import { Layout, Type, SpaceIcon, Palette, Plus, RotateCcw, Zap } from "lucide-react";
 import debounce from "lodash/debounce";
 import { useTranslations } from "@/i18n/compat/client";
 import {
@@ -18,14 +18,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LayoutSetting from "./layout/LayoutSetting";
 import { useResumeStore } from "@/store/useResumeStore";
 import { cn } from "@/lib/utils";
-import { THEME_COLORS, MenuSection } from "@/types/resume";
+import { RESUME_THEME_PRESETS, THEME_COLORS, MenuSection } from "@/types/resume";
 import { ColorPicker } from "@/components/ui/color-picker";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Plus } from "lucide-react";
 import { STANDARD_MODULES } from "@/config/modules";
 import { DEFAULT_TEMPLATES } from "@/config";
 import { getFontOptions, normalizeFontFamily } from "@/utils/fonts";
@@ -267,25 +266,55 @@ export function SidePanel({
             </ColorPicker>
           }
         >
-          <div className="flex flex-wrap gap-2.5 pt-1">
-            {THEME_COLORS.map((presetTheme) => (
+          <div className="grid grid-cols-4 gap-3 pt-1">
+            {RESUME_THEME_PRESETS.map((preset) => (
               <button
-                key={presetTheme}
+                key={preset.key}
                 className={cn(
-                  "relative group w-6 h-6 rounded-full overflow-hidden transition-all duration-200 focus:outline-none",
-                  themeColor === presetTheme
-                    ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
-                    : "ring-1 ring-border hover:ring-primary/50 hover:scale-110"
+                  "group flex flex-col items-center gap-1.5 rounded-md py-1.5 text-[11px] text-muted-foreground transition-colors hover:bg-accent focus:outline-none",
+                  themeColor.toLowerCase() === preset.color.toLowerCase()
+                    ? "font-medium text-foreground"
+                    : ""
                 )}
-                onClick={() => setThemeColor(presetTheme)}
-                title={presetTheme}
+                onClick={() => setThemeColor(preset.color)}
+                title={t(`theme.presets.${preset.key}`)}
               >
-                <div
-                  className="absolute inset-0"
-                  style={{ backgroundColor: presetTheme }}
+                <span
+                  className={cn(
+                    "block h-7 w-7 rounded-full transition-transform group-hover:scale-110",
+                    themeColor.toLowerCase() === preset.color.toLowerCase()
+                    ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                    : "ring-1 ring-border"
+                  )}
+                  style={{ backgroundColor: preset.color }}
                 />
+                <span className="truncate max-w-full">
+                  {t(`theme.presets.${preset.key}`)}
+                </span>
               </button>
             ))}
+          </div>
+          <div className="mt-4 flex items-center justify-between border-t pt-3 text-xs">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <span>{t("theme.current")}</span>
+              <span
+                className="h-3.5 w-3.5 rounded-full border"
+                style={{ backgroundColor: themeColor }}
+              />
+              <span className="font-mono uppercase text-foreground">{themeColor}</span>
+            </div>
+            <button
+              type="button"
+              className="flex items-center gap-1 text-muted-foreground transition-colors hover:text-foreground disabled:cursor-default disabled:opacity-40"
+              onClick={() => setThemeColor(currentTemplate.colorScheme.primary)}
+              disabled={
+                themeColor.toLowerCase() ===
+                currentTemplate.colorScheme.primary.toLowerCase()
+              }
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              {t("theme.reset")}
+            </button>
           </div>
         </SettingCard>
 

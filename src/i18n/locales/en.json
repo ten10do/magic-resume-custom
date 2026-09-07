@@ -126,11 +126,11 @@
         "jsonTitle": "Import JSON",
         "jsonDescription": "Import an exported resume config file (.json)",
         "pdfTitle": "Import PDF",
-        "pdfDescription": "Use Gemini into structured resume data",
+        "pdfDescription": "Use DeepSeek Vision to generate structured resume data",
         "importing": "Importing, please wait...",
-        "geminiConfigRequired": "Please configure Gemini API Key and Model ID in AI settings first",
+        "visionConfigRequired": "Please configure a DeepSeek API Key (or Gemini) in AI settings first",
         "pdfSuccess": "PDF imported successfully",
-        "pdfError": "PDF import failed. Please check PDF content or Gemini configuration"
+        "pdfError": "PDF import failed. Please check the PDF content or vision model configuration"
       },
       "notice": {
         "title": "Attention",
@@ -195,7 +195,7 @@
         },
         "deepseek": {
           "title": "DeepSeek",
-          "description": "Get API key from DeepSeek Platform",
+          "description": "Supports polish, grammar check, and PDF image resume import",
           "apiKey": "DeepSeek API Key"
         },
         "openai": {
@@ -350,7 +350,19 @@
       },
       "theme": {
         "title": "Theme Color",
-        "custom": "Custom"
+        "custom": "Custom",
+        "current": "Current",
+        "reset": "Reset",
+        "presets": {
+          "classicBlack": "Classic",
+          "businessBlue": "Business",
+          "deepGray": "Deep Gray",
+          "inkGreen": "Ink Green",
+          "navy": "Navy",
+          "burgundy": "Burgundy",
+          "warmBrown": "Warm Brown",
+          "purple": "Purple"
+        }
       },
       "typography": {
         "title": "Typography",

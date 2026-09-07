@@ -30,8 +30,18 @@ import {
 import pdfWorkerUrl from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
 
 const MAX_PDF_IMPORT_PAGES = 3;
-const PDF_IMAGE_QUALITY = 0.82;
-const PDF_MAX_IMAGE_WIDTH = 1600;
+const PDF_IMAGE_QUALITY = 0.9;
+const PDF_MAX_IMAGE_WIDTH = 2200;
+const DEEPSEEK_VISION_MODEL = "deepseek-v4-flash-vision-exp";
+const PHOTO_SEARCH_HEIGHT_RATIO = 0.6;
+
+const loadImage = (src: string) =>
+    new Promise<HTMLImageElement>((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = () => reject(new Error("Unable to load image"));
+        image.src = src;
+    });
 
 export const ResumeWorkbench = () => {
     const t = useTranslations();
@@ -44,6 +54,7 @@ export const ResumeWorkbench = () => {
         createResume,
     } = useResumeStore();
     const {
+        deepseekApiKey,
         geminiApiKey,
         geminiModelId,
     } = useAIConfigStore();
@@ -146,7 +157,7 @@ export const ResumeWorkbench = () => {
         const buffer = await file.arrayBuffer();
         const typedPdfjs = pdfjs as any;
 
-        typedPdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+        typedPdfjs.GlobalWorkerOptions.workerSrc = `${pdfWorkerUrl}?v=2`;
 
         const loadingTask = typedPdfjs.getDocument({
             data: new Uint8Array(buffer),
@@ -185,9 +196,144 @@ export const ResumeWorkbench = () => {
         return pageImages;
     };
 
+    const createPhotoSearchImage = async (pageImage: string) => {
+        const sourceImage = await loadImage(pageImage);
+        const canvas = document.createElement("canvas");
+        canvas.width = sourceImage.naturalWidth;
+        canvas.height = Math.max(
+            1,
+            Math.round(sourceImage.naturalHeight * PHOTO_SEARCH_HEIGHT_RATIO)
+        );
+        const context = canvas.getContext("2d", { alpha: false });
+
+        if (!context) return pageImage;
+
+        context.drawImage(
+            sourceImage,
+            0,
+            0,
+            sourceImage.naturalWidth,
+            canvas.height,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+        return canvas.toDataURL("image/jpeg", PDF_IMAGE_QUALITY);
+    };
+
+    const extractDetectedPhoto = async (pageImages: string[], detection: any) => {
+        const pageNumber = Number(detection?.page);
+        const bbox = Array.isArray(detection?.bbox)
+            ? detection.bbox.map(Number)
+            : [];
+
+        if (
+            !Number.isInteger(pageNumber) ||
+            pageNumber < 1 ||
+            pageNumber > pageImages.length ||
+            bbox.length !== 4 ||
+            bbox.some((value: number) => !Number.isFinite(value))
+        ) {
+            return null;
+        }
+
+        const coordinateScale = Math.max(...bbox) <= 1 ? 1 : 1000;
+        const [rawLeft, rawTop, rawRight, rawBottom] = bbox.map(
+            (value: number) => value / coordinateScale
+        );
+
+        if (rawRight <= rawLeft || rawBottom <= rawTop) {
+            return null;
+        }
+
+        const left = Math.max(0, rawLeft);
+        const top = Math.max(0, rawTop);
+        const right = Math.min(1, rawRight);
+        const bottom = Math.min(1, rawBottom);
+        if (right <= left || bottom <= top) {
+            return null;
+        }
+
+        const sourceImage = await loadImage(pageImages[pageNumber - 1]);
+        const sourceX = Math.floor(left * sourceImage.naturalWidth);
+        const sourceY = Math.floor(top * sourceImage.naturalHeight);
+        const sourceWidth = Math.max(
+            1,
+            Math.ceil((right - left) * sourceImage.naturalWidth)
+        );
+        const sourceHeight = Math.max(
+            1,
+            Math.ceil((bottom - top) * sourceImage.naturalHeight)
+        );
+        const outputScale = Math.min(1, 600 / sourceWidth);
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(sourceWidth * outputScale));
+        canvas.height = Math.max(1, Math.round(sourceHeight * outputScale));
+        const context = canvas.getContext("2d", { alpha: false });
+
+        if (!context) {
+            return null;
+        }
+
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = "high";
+        context.drawImage(
+            sourceImage,
+            sourceX,
+            sourceY,
+            sourceWidth,
+            sourceHeight,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        const sourceAspectRatio = sourceWidth / sourceHeight;
+        const maxDisplayWidth = 110;
+        const maxDisplayHeight = 120;
+        let displayWidth = maxDisplayWidth;
+        let displayHeight = displayWidth / sourceAspectRatio;
+
+        if (displayHeight > maxDisplayHeight) {
+            displayHeight = maxDisplayHeight;
+            displayWidth = displayHeight * sourceAspectRatio;
+        }
+
+        const knownAspectRatios = [
+            { value: "1:1" as const, ratio: 1 },
+            { value: "4:3" as const, ratio: 4 / 3 },
+            { value: "3:4" as const, ratio: 3 / 4 },
+            { value: "16:9" as const, ratio: 16 / 9 },
+        ];
+        const closestAspectRatio = knownAspectRatios.reduce((closest, current) =>
+            Math.abs(current.ratio - sourceAspectRatio) <
+            Math.abs(closest.ratio - sourceAspectRatio)
+                ? current
+                : closest
+        );
+        const aspectRatio =
+            Math.abs(closestAspectRatio.ratio - sourceAspectRatio) <= 0.08
+                ? closestAspectRatio.value
+                : ("custom" as const);
+
+        return {
+            dataUrl: canvas.toDataURL("image/jpeg", 0.92),
+            photoConfig: {
+                width: Math.max(48, Math.round(displayWidth)),
+                height: Math.max(48, Math.round(displayHeight)),
+                aspectRatio,
+            },
+        };
+    };
+
     const importResumeFromPdf = async (file: File) => {
-        if (!geminiApiKey || !geminiModelId) {
-            toast.error(t("dashboard.resumes.importDialog.geminiConfigRequired"));
+        const useDeepseek = !!deepseekApiKey;
+        const hasGeminiFallback = !!(geminiApiKey && geminiModelId);
+
+        if (!useDeepseek && !hasGeminiFallback) {
+            toast.error(t("dashboard.resumes.importDialog.visionConfigRequired"));
             router.push("/app/dashboard/ai");
             return;
         }
@@ -196,6 +342,7 @@ export const ResumeWorkbench = () => {
         if (pdfImages.length === 0) {
             throw new Error("No extractable PDF pages");
         }
+        const photoSearchImage = await createPhotoSearchImage(pdfImages[0]);
 
         const response = await fetch("/api/resume-import", {
             method: "POST",
@@ -204,8 +351,11 @@ export const ResumeWorkbench = () => {
             },
             body: JSON.stringify({
                 images: pdfImages,
-                apiKey: geminiApiKey,
-                model: geminiModelId,
+                photoSearchImage,
+                photoSearchHeightRatio: PHOTO_SEARCH_HEIGHT_RATIO,
+                provider: useDeepseek ? "deepseek" : "gemini",
+                apiKey: useDeepseek ? deepseekApiKey : geminiApiKey,
+                model: useDeepseek ? DEEPSEEK_VISION_MODEL : geminiModelId,
                 locale,
             }),
         });
@@ -229,7 +379,13 @@ export const ResumeWorkbench = () => {
         }
 
         const nameWithoutExt = file.name.replace(/\.[^.]+$/, "").trim();
-        const resume = createResumeFromAIResult(aiResume, nameWithoutExt);
+        const importedPhoto = await extractDetectedPhoto(pdfImages, aiResume?.photo);
+        const resume = createResumeFromAIResult(
+            aiResume,
+            nameWithoutExt,
+            importedPhoto?.dataUrl || "",
+            importedPhoto?.photoConfig
+        );
         const resumeId = addResume(resume);
         setActiveResume(resumeId);
         setIsImportDialogOpen(false);

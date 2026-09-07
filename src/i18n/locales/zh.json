@@ -127,11 +127,11 @@
         "jsonTitle": "导入 JSON",
         "jsonDescription": "导入已导出的简历配置文件（.json）",
         "pdfTitle": "导入 PDF",
-        "pdfDescription": "使用 Gemini 自动识别生成简历结构",
+        "pdfDescription": "使用 DeepSeek Vision 自动识别生成简历结构",
         "importing": "正在导入，请稍候...",
-        "geminiConfigRequired": "请先在 AI 服务商设置页配置 Gemini API Key 和模型 ID",
+        "visionConfigRequired": "请先在 AI 服务商设置页配置 DeepSeek API Key（或 Gemini）",
         "pdfSuccess": "PDF 导入成功",
-        "pdfError": "PDF 导入失败，请检查 PDF 内容或 Gemini 配置"
+        "pdfError": "PDF 导入失败，请检查 PDF 内容或视觉模型配置"
       },
       "notice": {
         "title": "注意",
@@ -196,7 +196,7 @@
         },
         "deepseek": {
           "title": "DeepSeek",
-          "description": "在 DeepSeek 开放平台获取 API 密钥",
+          "description": "支持润色、语法检查和 PDF 图片识别导入",
           "apiKey": "API Key"
         },
         "openai": {
@@ -304,7 +304,19 @@
       },
       "theme": {
         "title": "主题色",
-        "custom": "自定义"
+        "custom": "自定义",
+        "current": "当前",
+        "reset": "恢复默认",
+        "presets": {
+          "classicBlack": "经典黑",
+          "businessBlue": "商务蓝",
+          "deepGray": "深灰",
+          "inkGreen": "墨绿",
+          "navy": "藏青",
+          "burgundy": "酒红",
+          "warmBrown": "暖棕",
+          "purple": "紫色"
+        }
       },
       "typography": {
         "title": "排版",

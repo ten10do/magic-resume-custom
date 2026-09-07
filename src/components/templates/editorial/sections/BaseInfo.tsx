@@ -71,8 +71,8 @@ const BaseInfo: React.FC<BaseInfoProps> = ({ basic, globalSettings }) => {
             {basic.name && nameField.visible !== false && (
               <motion.h1
                 layout="position"
-                className="font-bold tracking-widest whitespace-normal break-normal [overflow-wrap:normal] text-black"
-                style={{ fontSize: `${(globalSettings?.headerSize || 20) * 2}px`, lineHeight: "1.1", marginBottom: "8px" }}
+                className="font-bold tracking-widest whitespace-normal break-normal [overflow-wrap:normal]"
+                style={{ color: globalSettings?.themeColor || "#000", fontSize: `${(globalSettings?.headerSize || 20) * 2}px`, lineHeight: "1.1", marginBottom: "8px" }}
               >
                 {basic.name}
               </motion.h1>

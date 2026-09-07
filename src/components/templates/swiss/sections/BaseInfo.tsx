@@ -111,8 +111,8 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
                         {nameField.visible !== false && basic[nameField.key] && (
                             <motion.h1 
                                 layout="position" 
-                                className="font-black tracking-tight whitespace-normal break-normal [overflow-wrap:normal] leading-none text-slate-800" 
-                                style={{ fontSize: "38px" }}
+                                className="font-black tracking-tight whitespace-normal break-normal [overflow-wrap:normal] leading-none"
+                                style={{ fontSize: "38px", color: themeColor }}
                             >
                                 {basic[nameField.key] as string}
                             </motion.h1>

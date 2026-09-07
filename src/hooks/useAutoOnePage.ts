@@ -2,8 +2,8 @@ import { useMemo } from "react";
 
 const MM_TO_PX = 3.78;
 const A4_HEIGHT_PX = 297 * MM_TO_PX;
-// 最多只允许缩小到 90%，保证文字可读性和美观
-const MIN_SCALE = 0.9;
+// 最多缩小到 75%，兼顾单页排版与文字可读性
+const MIN_SCALE = 0.75;
 
 interface UseAutoOnePageOptions {
   contentHeight: number;

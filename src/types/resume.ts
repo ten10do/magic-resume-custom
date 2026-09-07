@@ -156,20 +156,18 @@ export interface CustomItem {
   visible: boolean;
 }
 
-export const THEME_COLORS = [
-  "#000000",
-  "#1A1A1A",
-  "#333333",
-  "#4D4D4D",
-  "#666666",
-  "#808080",
-  "#999999",
-  "#0047AB",
-  "#8B0000",
-  "#FF4500",
-  "#4B0082",
-  "#2E8B57",
-];
+export const RESUME_THEME_PRESETS = [
+  { key: "classicBlack", color: "#000000" },
+  { key: "businessBlue", color: "#2563EB" },
+  { key: "deepGray", color: "#374151" },
+  { key: "inkGreen", color: "#166534" },
+  { key: "navy", color: "#1E3A8A" },
+  { key: "burgundy", color: "#881337" },
+  { key: "warmBrown", color: "#92400E" },
+  { key: "purple", color: "#6D28D9" },
+] as const;
+
+export const THEME_COLORS = RESUME_THEME_PRESETS.map(({ color }) => color);
 
 export interface MenuSection {
   id: string;

@@ -86,9 +86,9 @@ const PreviewPanel = React.forwardRef<HTMLDivElement, PreviewPanelProps>(
       if (resumeContentRef.current) {
         const height = resumeContentRef.current.clientHeight;
         if (height > 0) {
-          if (height !== contentHeight) {
-            setContentHeight(height);
-          }
+          setContentHeight((currentHeight) =>
+            currentHeight === height ? currentHeight : height
+          );
         }
       }
     };
@@ -106,7 +106,6 @@ const PreviewPanel = React.forwardRef<HTMLDivElement, PreviewPanelProps>(
         observer.observe(resumeContentRef.current, {
           childList: true,
           subtree: true,
-          attributes: true,
           characterData: true,
         });
 
@@ -225,7 +224,6 @@ const PreviewPanel = React.forwardRef<HTMLDivElement, PreviewPanelProps>(
                   ? {
                     transform: `scale(${scaleFactor})`,
                     transformOrigin: "top left",
-                    width: `${100 / scaleFactor}%`,
                   }
                   : {}),
               }}
