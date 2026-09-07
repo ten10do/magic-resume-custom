@@ -1,6 +1,6 @@
 <div align="center">
 
-# ✨ Magic Resume ✨
+# ✨ Magic Resume Custom ✨
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![TanStack Start](https://img.shields.io/badge/TanStack_Start-latest-black)
@@ -13,7 +13,7 @@
 
 </div>
 
-Magic Resume 是一个现代化的在线简历编辑器，让创建专业简历变得简单有趣。基于 TanStack Start 和 Motion 构建，支持实时预览和自定义主题。
+Magic Resume Custom 是基于 Magic Resume 的个人定制版本。它是一个现代化的在线简历编辑器，基于 TanStack Start 和 Motion 构建，支持扫描件 PDF 智能导入、实时预览和自定义主题。
 
 ## 📸 项目截图
 
@@ -30,6 +30,10 @@ Magic Resume 是一个现代化的在线简历编辑器，让创建专业简历�
 - 🔄 实时预览
 - 💾 自动保存
 - 🔒 硬盘级存储
+- 🧠 使用 DeepSeek Vision 识别扫描件、图片型 PDF（最多 3 页）
+- 🖼️ 智能定位并提取简历证件照
+- 📄 自动压缩为一页 A4 简历
+- 🎨 预设色板和自定义主题色
 
 ## 🛠️ 技术栈
 
@@ -44,16 +48,19 @@ Magic Resume 是一个现代化的在线简历编辑器，让创建专业简历�
 
 ## 🚀 快速开始
 
+运行环境：Node.js 20 或更高版本、pnpm 10。
+
 1. 克隆项目
 
 ```bash
-git clone git@github.com:JOYCEQL/magic-resume.git
-cd magic-resume
+git clone https://github.com/ten10do/magic-resume-custom.git
+cd magic-resume-custom
 ```
 
-2. 安装依赖
+2. 启用 pnpm 并安装依赖
 
 ```bash
+corepack enable
 pnpm install
 ```
 
@@ -65,11 +72,24 @@ pnpm dev
 
 4. 打开浏览器访问 `http://localhost:3000`
 
-## 📦 构建打包
+## 🤖 AI 与 PDF 导入配置
+
+普通简历编辑和 PDF 导出不需要 API Key。使用扫描件 PDF 智能导入时：
+
+1. 打开应用中的“AI 服务商”。
+2. 填写你自己的 DeepSeek API Key。
+3. 返回“我的简历”，选择“导入简历 → 导入 PDF”。
+
+API Key 保存在当前浏览器的本地存储中，不会提交到 GitHub。公开部署时应使用 HTTPS，并让每位使用者填写自己的 Key。
+
+## 📦 生产环境运行
 
 ```bash
 pnpm build
+pnpm start
 ```
+
+默认监听 `0.0.0.0:3000`。可以通过 `PORT` 和 `HOSTNAME` 环境变量修改。
 
 ## 🐳 Docker 部署
 
@@ -87,6 +107,13 @@ docker compose up -d
 
 - 自动构建应用镜像
 - 在后台启动容器
+
+## ☁️ 在线部署说明
+
+- 推荐部署到支持 Node.js 或 Docker 的平台，因为 PDF 智能导入依赖服务端 API 路由。
+- GitHub Pages 仅支持静态网站，不能直接运行完整功能。
+- `.github/workflows/deploy.yml` 是可选的 Cloudflare 手动部署任务，需要配置 `CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ACCOUNT_ID`。
+- `.github/workflows/docker-publish.yml` 是可选的 Docker Hub 手动发布任务，需要配置 `DOCKERHUB_USERNAME` 和 `DOCKERHUB_TOKEN`。
 
 
 
@@ -107,7 +134,7 @@ docker compose up -d
 - [ ] 更多格式导出
 - [x] 自定义模型
 - [x] 自动一页纸
-- [ ] 导入 PDF, Markdown 等
+- [x] 导入扫描件和图片型 PDF
 - [ ] 在线简历托管
 
 ## 📈 Star History

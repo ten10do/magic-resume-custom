@@ -1,6 +1,6 @@
 <div align="center">
 
-# ✨ Magic Resume ✨
+# ✨ Magic Resume Custom ✨
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![TanStack Start](https://img.shields.io/badge/TanStack_Start-latest-black)
@@ -12,7 +12,7 @@
 
 </div>
 
-Magic Resume is a modern online resume editor that makes creating professional resumes simple and enjoyable. Built with TanStack Start and Framer Motion, it supports real-time preview and custom themes.
+Magic Resume Custom is a personalized fork of Magic Resume. It is a modern resume editor built with TanStack Start and Framer Motion, with scanned-PDF import, real-time preview, and custom themes.
 
 ## 📸 Screenshots
 
@@ -30,6 +30,10 @@ Magic Resume is a modern online resume editor that makes creating professional r
 - 🔄 Real-time preview
 - 💾 Auto-save
 - 🔒 Local storage
+- 🧠 DeepSeek Vision import for scanned and image-based PDFs (up to 3 pages)
+- 🖼️ Smart resume-photo detection and extraction
+- 📄 Automatic one-page A4 fitting
+- 🎨 Preset palettes and custom theme colors
 
 ## 🛠️ Tech Stack
 
@@ -44,16 +48,19 @@ Magic Resume is a modern online resume editor that makes creating professional r
 
 ## 🚀 Quick Start
 
+Requirements: Node.js 20 or newer and pnpm 10.
+
 1. Clone the project
 
 ```bash
-git clone git@github.com:JOYCEQL/magic-resume.git
-cd magic-resume
+git clone https://github.com/ten10do/magic-resume-custom.git
+cd magic-resume-custom
 ```
 
-2. Install dependencies
+2. Enable pnpm and install dependencies
 
 ```bash
+corepack enable
 pnpm install
 ```
 
@@ -65,11 +72,24 @@ pnpm dev
 
 4. Open browser and visit `http://localhost:3000`
 
-## 📦 Build and Deploy
+## 🤖 AI and PDF Import Setup
+
+Editing resumes and exporting PDFs do not require an API key. To import a scanned PDF:
+
+1. Open **AI Providers** in the application.
+2. Enter your own DeepSeek API key.
+3. Return to **My Resumes** and choose **Import Resume → Import PDF**.
+
+The API key is stored in the current browser's local storage and is not committed to GitHub. Public deployments should use HTTPS and require each user to supply their own key.
+
+## 📦 Production
 
 ```bash
 pnpm build
+pnpm start
 ```
+
+The server listens on `0.0.0.0:3000` by default. Override it with the `PORT` and `HOSTNAME` environment variables.
 
 
 ## 🐳 Docker Deployment
@@ -89,6 +109,13 @@ This will:
 - Automatically build the application image
 - Start the container in the background
 
+## ☁️ Online Deployment
+
+- Use a platform that supports Node.js or Docker because PDF import depends on server API routes.
+- GitHub Pages is static-only and cannot run the complete application.
+- `.github/workflows/deploy.yml` is an optional manual Cloudflare deployment. It requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+- `.github/workflows/docker-publish.yml` is an optional manual Docker Hub publication. It requires `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
+
 
 ## 📝 License and Commercial Use
 
@@ -105,7 +132,7 @@ Please see the [LICENSE](LICENSE) file for detailed terms.
 - [x] Multi-language support
 - [ ] Support for more resume templates
 - [ ] Support for more export formats
-- [ ] Import PDF, Markdown, etc.
+- [x] Import scanned and image-based PDFs
 - [x] Custom model
 - [x] Auto one page
 - [ ] Online resume hosting
