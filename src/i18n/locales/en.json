@@ -566,6 +566,14 @@
     "educationPanel": {
       "title": "Education",
       "addButton": "Add Education",
+      "layout": {
+        "title": "Layout style",
+        "description": "Choose how education details are arranged on the resume",
+        "options": {
+          "standard": "Standard columns",
+          "singleLine": "Compact line"
+        }
+      },
       "defaultProject": {
         "school": "School Name",
         "degree": "Degree",

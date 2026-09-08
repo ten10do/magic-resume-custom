@@ -5,6 +5,7 @@ import SectionWrapper from "../../shared/SectionWrapper";
 import { useLocale } from "@/i18n/compat/client";
 import { hasMeaningfulRichTextContent, normalizeRichTextContent } from "@/lib/richText";
 import { formatDateRange, cn } from "@/lib/utils";
+import CompactEducationList from "../../shared/CompactEducationList";
 
 interface EducationSectionProps {
     education?: Education[];
@@ -29,6 +30,9 @@ const EducationSection = ({ education, globalSettings, showTitle = true, variant
                 showTitle={showTitle}
                 variant={variant}
             />
+            {globalSettings?.educationLayout === "singleLine" ? (
+                <CompactEducationList education={education} globalSettings={globalSettings} locale={locale} sidebar={isSidebar} />
+            ) : (
             <AnimatePresence mode="popLayout">
                 {visibleEducation?.map((edu) => (
                     <motion.div key={edu.id} layout="position" style={{ marginTop: isSidebar ? "12px" : `${globalSettings?.paragraphSpacing}px` }}>
@@ -70,6 +74,7 @@ const EducationSection = ({ education, globalSettings, showTitle = true, variant
                     </motion.div>
                 ))}
             </AnimatePresence>
+            )}
         </SectionWrapper>
     );
 };

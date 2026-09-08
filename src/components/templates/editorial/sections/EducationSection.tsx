@@ -7,6 +7,7 @@ import SectionWrapper from "../../shared/SectionWrapper";
 import { normalizeRichTextContent } from "@/lib/richText";
 import { formatDateRange } from "@/lib/utils";
 import { useLocale } from "@/i18n/compat/client";
+import CompactEducationList from "../../shared/CompactEducationList";
 
 interface EducationSectionProps {
   education?: Education[];
@@ -22,6 +23,9 @@ const EducationSection: React.FC<EducationSectionProps> = ({ education, globalSe
   return (
     <SectionWrapper sectionId="education" className="w-full" style={{ marginTop: `${globalSettings?.sectionSpacing || 32}px` }}>
       <SectionTitle type="education" globalSettings={globalSettings} showTitle={showTitle} />
+      {globalSettings?.educationLayout === "singleLine" ? (
+        <CompactEducationList education={education} globalSettings={globalSettings} locale={locale} />
+      ) : (
       <AnimatePresence mode="popLayout">
         {visibleEducation?.map((edu) => (
           <motion.div key={edu.id} layout="position" className={cn("relative pb-6 last:border-0 last:pb-0", showTimeline ? "pl-5 border-l-[1.5px] border-[#e5e7eb]" : "")} style={{ marginTop: `${globalSettings?.paragraphSpacing}px` }}>
@@ -49,6 +53,7 @@ const EducationSection: React.FC<EducationSectionProps> = ({ education, globalSe
           </motion.div>
         ))}
       </AnimatePresence>
+      )}
     </SectionWrapper>
   );
 };

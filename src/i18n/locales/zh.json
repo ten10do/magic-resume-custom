@@ -523,6 +523,14 @@
     "educationPanel": {
       "title": "教育背景",
       "addButton": "添加教育经历",
+      "layout": {
+        "title": "排版样式",
+        "description": "切换教育经历在简历中的信息排列方式",
+        "options": {
+          "standard": "默认分栏",
+          "singleLine": "简洁单行"
+        }
+      },
       "defaultProject": {
         "school": "学校名称",
         "degree": "学历",

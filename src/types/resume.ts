@@ -145,6 +145,7 @@ export type GlobalSettings = {
   centerSubtitle?: boolean | undefined;
   flexibleHeaderLayout?: boolean | undefined;
   autoOnePage?: boolean | undefined;
+  educationLayout?: "standard" | "singleLine" | undefined;
 };
 
 export interface ResumeTheme {

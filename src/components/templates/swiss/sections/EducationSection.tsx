@@ -6,6 +6,7 @@ import SectionWrapper from "../../shared/SectionWrapper";
 import { useLocale } from "@/i18n/compat/client";
 import { hasMeaningfulRichTextContent, normalizeRichTextContent } from "@/lib/richText";
 import { formatDateRange } from "@/lib/utils";
+import CompactEducationList from "../../shared/CompactEducationList";
 
 interface EducationSectionProps {
     education?: Education[];
@@ -22,6 +23,9 @@ const EducationSection = ({ education, globalSettings, showTitle = true }: Educa
     return (
         <SectionWrapper sectionId="education" style={{ marginTop: `${globalSettings?.sectionSpacing || 24}px` }}>
             <SectionTitle type="education" globalSettings={globalSettings} showTitle={showTitle} />
+            {globalSettings?.educationLayout === "singleLine" ? (
+                <CompactEducationList education={education} globalSettings={globalSettings} locale={locale} />
+            ) : (
             <AnimatePresence mode="popLayout">
                 <div className="flex flex-col gap-6" style={{ marginTop: `${globalSettings?.paragraphSpacing || 16}px` }}>
                     {visibleEducation?.map((edu) => (
@@ -85,6 +89,7 @@ const EducationSection = ({ education, globalSettings, showTitle = true }: Educa
                     ))}
                 </div>
             </AnimatePresence>
+            )}
         </SectionWrapper>
     );
 };

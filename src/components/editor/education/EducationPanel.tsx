@@ -10,7 +10,7 @@ import { generateUUID } from "@/utils/uuid";
 
 const EducationPanel = () => {
   const t = useTranslations('workbench.educationPanel');
-  const { activeResume, updateEducation, updateEducationBatch } =
+  const { activeResume, updateEducation, updateEducationBatch, updateGlobalSettings } =
     useResumeStore();
   const { education = [] } = activeResume || {};
   const handleCreateProject = () => {
@@ -34,6 +34,26 @@ const EducationPanel = () => {
         "dark:bg-neutral-900/30",
       )}
     >
+      <div className="space-y-2 rounded-lg border border-border bg-card p-3">
+        <div>
+          <div className="text-sm font-medium">{t('layout.title')}</div>
+          <p className="mt-1 text-xs text-muted-foreground">{t('layout.description')}</p>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {(["standard", "singleLine"] as const).map((layout) => (
+            <Button
+              key={layout}
+              type="button"
+              size="sm"
+              variant={(activeResume?.globalSettings?.educationLayout || "standard") === layout ? "default" : "outline"}
+              onClick={() => updateGlobalSettings({ educationLayout: layout })}
+            >
+              {t(`layout.options.${layout}`)}
+            </Button>
+          ))}
+        </div>
+      </div>
+
       <Reorder.Group
         axis="y"
         values={education}
