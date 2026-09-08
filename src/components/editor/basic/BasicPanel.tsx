@@ -4,6 +4,7 @@ import { Reorder, AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "@/i18n/compat/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import PhotoUpload from "@/components/shared/PhotoSelector";
 import IconSelector from "../IconSelector";
@@ -27,6 +28,49 @@ const itemAnimations = {
   exit: { opacity: 0, y: 0 },
   transition: { type: "spring", stiffness: 500, damping: 50, mass: 1 },
 };
+
+interface SizeControlProps {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  presets: Array<{ label: string; value: number }>;
+  onChange: (value: number) => void;
+}
+
+const SizeControl: React.FC<SizeControlProps> = ({
+  label,
+  value,
+  min,
+  max,
+  presets,
+  onChange,
+}) => (
+  <div className="space-y-2">
+    <span className="text-xs text-muted-foreground">{label}</span>
+    <Slider
+      aria-label={label}
+      value={[value]}
+      min={min}
+      max={max}
+      step={1}
+      onValueChange={([nextValue]) => onChange(nextValue)}
+    />
+    <div className="grid grid-cols-3 gap-2">
+      {presets.map((preset) => (
+        <Button
+          key={preset.label}
+          type="button"
+          size="sm"
+          variant={value === preset.value ? "default" : "outline"}
+          onClick={() => onChange(preset.value)}
+        >
+          {preset.label}
+        </Button>
+      ))}
+    </div>
+  </div>
+);
 
 const CustomField: React.FC<CustomFieldProps> = ({
   field,
@@ -188,26 +232,47 @@ const BasicPanel: React.FC = () => {
         ? activeResume.globalSettings?.subheaderSize || 16
         : 18;
   const defaultContactFontSize = activeResume?.globalSettings?.baseFontSize || 14;
+  const currentPhotoWidth = basic?.photoConfig?.width || DEFAULT_CONFIG.width;
+  const currentPhotoHeight = basic?.photoConfig?.height || DEFAULT_CONFIG.height;
+  const currentNameFontSize = basic?.nameFontSize || defaultNameFontSize;
+  const currentTitleFontSize = basic?.titleFontSize || defaultTitleFontSize;
+  const currentContactFontSize = basic?.contactFontSize || defaultContactFontSize;
+  const sizeLabels = {
+    small: t("appearance.sizes.small"),
+    medium: t("appearance.sizes.medium"),
+    large: t("appearance.sizes.large"),
+  };
 
-  const updateNumberSetting = (
+  const updateSizeSetting = (
     key: "nameFontSize" | "titleFontSize" | "contactFontSize",
-    value: string,
+    value: number,
     min: number,
     max: number
   ) => {
-    const number = Number(value);
-    if (!Number.isFinite(number)) return;
-    updateBasicInfo({ [key]: Math.min(max, Math.max(min, number)) });
+    updateBasicInfo({ [key]: Math.min(max, Math.max(min, value)) });
   };
 
-  const updatePhotoSize = (key: "width" | "height", value: string) => {
-    const number = Number(value);
-    if (!Number.isFinite(number)) return;
+  const updatePhotoSize = (width: number) => {
+    const aspectRatio = currentPhotoHeight / currentPhotoWidth;
     updateBasicInfo({
       photoConfig: {
         ...(basic?.photoConfig || DEFAULT_CONFIG),
-        [key]: Math.min(200, Math.max(24, number)),
+        width,
+        height: Math.round(width * aspectRatio),
       },
+    });
+  };
+
+  const resetSizes = () => {
+    updateBasicInfo({
+      photoConfig: {
+        ...(basic?.photoConfig || DEFAULT_CONFIG),
+        width: DEFAULT_CONFIG.width,
+        height: DEFAULT_CONFIG.height,
+      },
+      nameFontSize: defaultNameFontSize,
+      titleFontSize: defaultTitleFontSize,
+      contactFontSize: defaultContactFontSize,
     });
   };
 
@@ -432,37 +497,32 @@ const BasicPanel: React.FC = () => {
         </div>
 
         <div className="space-y-4 rounded-xl border border-border bg-card p-4">
-          <div>
-            <h2 className="text-lg font-medium">{t("appearance.title")}</h2>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t("appearance.description")}
-            </p>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-medium">{t("appearance.title")}</h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("appearance.description")}
+              </p>
+            </div>
+            <Button type="button" size="sm" variant="ghost" onClick={resetSizes}>
+              {t("appearance.reset")}
+            </Button>
           </div>
 
           <div className="space-y-3">
             <h3 className="text-sm font-medium">{t("appearance.photo")}</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <label className="space-y-1 text-xs text-muted-foreground">
-                <span>{t("appearance.width")}</span>
-                <Input
-                  type="number"
-                  min={24}
-                  max={200}
-                  value={basic?.photoConfig?.width || 90}
-                  onChange={(event) => updatePhotoSize("width", event.target.value)}
-                />
-              </label>
-              <label className="space-y-1 text-xs text-muted-foreground">
-                <span>{t("appearance.height")}</span>
-                <Input
-                  type="number"
-                  min={24}
-                  max={200}
-                  value={basic?.photoConfig?.height || 120}
-                  onChange={(event) => updatePhotoSize("height", event.target.value)}
-                />
-              </label>
-            </div>
+            <SizeControl
+              label={t("appearance.photoSize")}
+              value={currentPhotoWidth}
+              min={24}
+              max={200}
+              presets={[
+                { label: sizeLabels.small, value: 70 },
+                { label: sizeLabels.medium, value: 90 },
+                { label: sizeLabels.large, value: 120 },
+              ]}
+              onChange={updatePhotoSize}
+            />
             <div className="grid grid-cols-3 gap-2">
               {(["left", "top", "right"] as const).map((position) => (
                 <Button
@@ -489,32 +549,30 @@ const BasicPanel: React.FC = () => {
 
           <div className="space-y-3 border-t pt-3">
             <h3 className="text-sm font-medium">{t("appearance.nameAndTitle")}</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <label className="space-y-1 text-xs text-muted-foreground">
-                <span>{t("appearance.nameSize")}</span>
-                <Input
-                  type="number"
-                  min={20}
-                  max={56}
-                  value={basic?.nameFontSize || defaultNameFontSize}
-                  onChange={(event) =>
-                    updateNumberSetting("nameFontSize", event.target.value, 20, 56)
-                  }
-                />
-              </label>
-              <label className="space-y-1 text-xs text-muted-foreground">
-                <span>{t("appearance.titleSize")}</span>
-                <Input
-                  type="number"
-                  min={10}
-                  max={32}
-                  value={basic?.titleFontSize || defaultTitleFontSize}
-                  onChange={(event) =>
-                    updateNumberSetting("titleFontSize", event.target.value, 10, 32)
-                  }
-                />
-              </label>
-            </div>
+            <SizeControl
+              label={t("appearance.nameSize")}
+              value={currentNameFontSize}
+              min={20}
+              max={56}
+              presets={[
+                { label: sizeLabels.small, value: Math.max(20, defaultNameFontSize - 6) },
+                { label: sizeLabels.medium, value: defaultNameFontSize },
+                { label: sizeLabels.large, value: Math.min(56, defaultNameFontSize + 8) },
+              ]}
+              onChange={(value) => updateSizeSetting("nameFontSize", value, 20, 56)}
+            />
+            <SizeControl
+              label={t("appearance.titleSize")}
+              value={currentTitleFontSize}
+              min={10}
+              max={32}
+              presets={[
+                { label: sizeLabels.small, value: Math.max(10, defaultTitleFontSize - 3) },
+                { label: sizeLabels.medium, value: defaultTitleFontSize },
+                { label: sizeLabels.large, value: Math.min(32, defaultTitleFontSize + 4) },
+              ]}
+              onChange={(value) => updateSizeSetting("titleFontSize", value, 10, 32)}
+            />
             <div className="grid grid-cols-3 gap-2">
               {(["left", "center", "right"] as const).map((alignment) => (
                 <Button
@@ -532,18 +590,18 @@ const BasicPanel: React.FC = () => {
 
           <div className="space-y-3 border-t pt-3">
             <h3 className="text-sm font-medium">{t("appearance.contacts")}</h3>
-            <label className="block space-y-1 text-xs text-muted-foreground">
-              <span>{t("appearance.contactSize")}</span>
-              <Input
-                type="number"
-                min={10}
-                max={24}
-                value={basic?.contactFontSize || defaultContactFontSize}
-                onChange={(event) =>
-                  updateNumberSetting("contactFontSize", event.target.value, 10, 24)
-                }
-              />
-            </label>
+            <SizeControl
+              label={t("appearance.contactSize")}
+              value={currentContactFontSize}
+              min={10}
+              max={24}
+              presets={[
+                { label: sizeLabels.small, value: Math.max(10, defaultContactFontSize - 2) },
+                { label: sizeLabels.medium, value: defaultContactFontSize },
+                { label: sizeLabels.large, value: Math.min(24, defaultContactFontSize + 2) },
+              ]}
+              onChange={(value) => updateSizeSetting("contactFontSize", value, 10, 24)}
+            />
             <div className="grid grid-cols-3 gap-2">
               {(["left", "center", "right"] as const).map((alignment) => (
                 <Button

@@ -381,15 +381,20 @@
       "avatar": "头像",
       "appearance": {
         "title": "基础信息排版",
-        "description": "分别调整照片、姓名与联系方式的尺寸和位置",
+        "description": "拖动滑块或选择快捷档位，实时调整尺寸和位置",
+        "reset": "恢复默认",
         "photo": "照片",
-        "width": "宽度（px）",
-        "height": "高度（px）",
+        "photoSize": "照片大小",
         "nameAndTitle": "姓名与职位",
-        "nameSize": "姓名字号（px）",
-        "titleSize": "职位字号（px）",
+        "nameSize": "姓名大小",
+        "titleSize": "职位大小",
         "contacts": "联系方式",
-        "contactSize": "联系方式字号（px）",
+        "contactSize": "联系方式大小",
+        "sizes": {
+          "small": "小",
+          "medium": "中",
+          "large": "大"
+        },
         "photoPositions": {
           "left": "姓名左侧",
           "top": "姓名上方",

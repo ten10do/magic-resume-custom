@@ -423,15 +423,20 @@
       "layout": "Align",
       "appearance": {
         "title": "Profile Layout",
-        "description": "Adjust the photo, name, title, and contact details independently",
+        "description": "Drag a slider or choose a preset to adjust size and position live",
+        "reset": "Reset",
         "photo": "Photo",
-        "width": "Width (px)",
-        "height": "Height (px)",
+        "photoSize": "Photo size",
         "nameAndTitle": "Name and title",
-        "nameSize": "Name size (px)",
-        "titleSize": "Title size (px)",
+        "nameSize": "Name size",
+        "titleSize": "Title size",
         "contacts": "Contact details",
-        "contactSize": "Contact size (px)",
+        "contactSize": "Contact size",
+        "sizes": {
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large"
+        },
         "photoPositions": {
           "left": "Left of name",
           "top": "Above name",
