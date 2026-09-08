@@ -20,6 +20,7 @@ const BaseInfo: React.FC<BaseInfoProps> = ({ basic, globalSettings }) => {
   const nameAlignment = basic.nameAlignment || layout;
   const contactAlignment = basic.contactAlignment || layout;
   const alignmentItems = { left: "flex-start", center: "center", right: "flex-end" } as const;
+  const isTopRightPhoto = photoPosition === "topRight";
 
   const getOrderedFields = React.useMemo(() => {
     if (!basic.fieldOrder) {
@@ -74,11 +75,13 @@ const BaseInfo: React.FC<BaseInfoProps> = ({ basic, globalSettings }) => {
         <div
           className="flex justify-between gap-6"
           style={{
-            flexDirection: photoPosition === "top" ? "column-reverse" : photoPosition === "left" ? "row-reverse" : "row",
-            alignItems: photoPosition === "top" ? alignmentItems[nameAlignment] : "center",
+            position: isTopRightPhoto ? "relative" : undefined,
+            flexDirection: isTopRightPhoto ? "row" : photoPosition === "top" ? "column-reverse" : photoPosition === "left" ? "row-reverse" : "row",
+            alignItems: isTopRightPhoto ? "flex-start" : photoPosition === "top" ? alignmentItems[nameAlignment] : "center",
+            minHeight: isTopRightPhoto ? `${basic.photoConfig?.height || 100}px` : undefined,
           }}
         >
-          <div className="flex-1 min-w-0" style={{ textAlign: nameAlignment }}>
+          <div className="flex-1 min-w-0" style={{ textAlign: nameAlignment, width: isTopRightPhoto ? "100%" : undefined }}>
             {basic.name && nameField.visible !== false && (
               <motion.h1
                 layout="position"
@@ -90,7 +93,7 @@ const BaseInfo: React.FC<BaseInfoProps> = ({ basic, globalSettings }) => {
             )}
           </div>
           {showPhoto && (
-            <motion.div layout="position" className="shrink-0">
+            <motion.div layout="position" className="shrink-0" style={isTopRightPhoto ? { position: "absolute", top: 0, right: 0, zIndex: 1 } : undefined}>
               <div
                 style={{
                   width: `${basic.photoConfig?.width || 100}px`,
@@ -107,9 +110,9 @@ const BaseInfo: React.FC<BaseInfoProps> = ({ basic, globalSettings }) => {
 
         <div className="w-full h-[3px] my-4" style={{ backgroundColor: globalSettings?.themeColor || "#000" }} />
 
-        <div className="flex justify-between items-start mt-10 w-full">
+        <div className="flex justify-between items-start mt-10 w-full" style={isTopRightPhoto ? { flexDirection: "column", alignItems: "stretch", gap: "12px", marginTop: "16px" } : undefined}>
           {basic.title && titleField.visible !== false && (
-            <div className="flex-1 min-w-[100px] shrink-0" style={{ textAlign: nameAlignment }}>
+            <div className="flex-1 min-w-[100px] shrink-0" style={{ textAlign: nameAlignment, width: isTopRightPhoto ? "100%" : undefined }}>
               <motion.h2
                 layout="position"
                 className="font-normal tracking-wide text-gray-700 whitespace-normal break-normal [overflow-wrap:normal]"
@@ -120,7 +123,7 @@ const BaseInfo: React.FC<BaseInfoProps> = ({ basic, globalSettings }) => {
             </div>
           )}
 
-          <motion.div layout="position" className="flex flex-wrap items-center gap-x-6 gap-y-2 uppercase tracking-[0.05em] text-gray-500 w-[80%] flex-shrink-0" style={{ fontSize: `${basic.contactFontSize || globalSettings?.baseFontSize || 14}px`, justifyContent: contactAlignment === "left" ? "flex-start" : contactAlignment === "right" ? "flex-end" : "center", textAlign: contactAlignment }}>
+          <motion.div layout="position" className="flex flex-wrap items-center gap-x-6 gap-y-2 uppercase tracking-[0.05em] text-gray-500 w-[80%] flex-shrink-0" style={{ fontSize: `${basic.contactFontSize || globalSettings?.baseFontSize || 14}px`, justifyContent: contactAlignment === "left" ? "flex-start" : contactAlignment === "right" ? "flex-end" : "center", textAlign: contactAlignment, width: isTopRightPhoto ? "100%" : undefined }}>
             {allFields.map((item) => {
               const customFieldHref =
                 item.custom && "href" in item && typeof item.href === "string"

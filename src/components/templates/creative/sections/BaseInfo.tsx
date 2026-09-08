@@ -26,6 +26,7 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
     const nameAlignment = basic.nameAlignment || layout;
     const contactAlignment = basic.contactAlignment || layout;
     const alignmentItems = { left: "flex-start", center: "center", right: "flex-end" } as const;
+    const isTopRightPhoto = photoPosition === "topRight";
 
     const getIcon = (iconName: string | undefined) => {
         const IconComponent = Icons[iconName as keyof typeof Icons] as React.ElementType;
@@ -57,7 +58,7 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
     const titleField = basic.fieldOrder?.find((f) => f.key === "title") || { key: "title", visible: true };
 
     const PhotoComponent = basic.photo && basic.photoConfig?.visible && (
-        <motion.div layout="position">
+        <motion.div layout="position" style={isTopRightPhoto ? { position: "absolute", top: 0, right: 0, zIndex: 1 } : undefined}>
             <div style={{ width: `${basic.photoConfig?.width || 100}px`, height: `${basic.photoConfig?.height || 100}px`, borderRadius: getBorderRadiusValue(basic.photoConfig || { borderRadius: "none", customBorderRadius: 0 }), overflow: "hidden" }}>
                 <img src={basic.photo} alt={`${basic.name}'s photo`} className="w-full h-full object-cover" />
             </div>
@@ -74,10 +75,10 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
 
     return (
         <SectionWrapper sectionId="basic">
-            <div className={styles.container}>
-                <div className={styles.leftContent} style={{ flexDirection: photoPosition === "top" ? "column" : photoPosition === "right" ? "row-reverse" : "row" }}>
+            <div className={styles.container} style={isTopRightPhoto ? { position: "relative", flexDirection: "column", alignItems: "stretch", justifyContent: "flex-start", minHeight: `${basic.photoConfig?.height || 100}px` } : undefined}>
+                <div className={styles.leftContent} style={{ flexDirection: isTopRightPhoto ? "column" : photoPosition === "top" ? "column" : photoPosition === "right" ? "row-reverse" : "row", ...(isTopRightPhoto ? { width: "100%", maxWidth: "none", flexShrink: 0 } : {}) }}>
                     {PhotoComponent}
-                    <div className={cn("flex flex-col", styles.nameTitle)} style={{ color: "#fff", alignItems: alignmentItems[nameAlignment], textAlign: nameAlignment }}>
+                    <div className={cn("flex flex-col", styles.nameTitle)} style={{ color: "#fff", alignItems: alignmentItems[nameAlignment], textAlign: nameAlignment, ...(isTopRightPhoto ? { width: "100%", maxWidth: "none" } : {}) }}>
                         {nameField.visible !== false && basic[nameField.key] && (
                             <motion.h1 layout="position" className="font-bold whitespace-normal break-normal [overflow-wrap:normal]" style={{ fontSize: `${basic.nameFontSize || 30}px`, color: "#fff" }}>{basic[nameField.key] as string}</motion.h1>
                         )}
@@ -87,7 +88,7 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
                     </div>
                 </div>
                 <motion.div layout="position" className={styles.fields}
-                    style={{ fontSize: `${basic.contactFontSize || globalSettings?.baseFontSize || 14}px`, color: "#fff", maxWidth: layout === "center" ? "none" : "600px", justifyItems: alignmentItems[contactAlignment], justifyContent: contactAlignment === "left" ? "flex-start" : contactAlignment === "right" ? "flex-end" : "center", textAlign: contactAlignment }}>
+                    style={{ fontSize: `${basic.contactFontSize || globalSettings?.baseFontSize || 14}px`, color: "#fff", maxWidth: layout === "center" ? "none" : "600px", justifyItems: alignmentItems[contactAlignment], justifyContent: contactAlignment === "left" ? "flex-start" : contactAlignment === "right" ? "flex-end" : "center", textAlign: contactAlignment, ...(isTopRightPhoto ? { width: "100%", maxWidth: "none", flex: "none" } : {}) }}>
                     {allFields.map((item) => {
                         const customFieldHref = item.custom && "href" in item && typeof item.href === "string" ? item.href : null;
 

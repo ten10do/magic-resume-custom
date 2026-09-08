@@ -25,6 +25,7 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
     const nameAlignment = basic.nameAlignment || layout;
     const contactAlignment = basic.contactAlignment || layout;
     const alignmentItems = { left: "flex-start", center: "center", right: "flex-end" } as const;
+    const isTopRightPhoto = photoPosition === "topRight";
 
     const getIcon = (iconName: string | undefined) => {
         const IconComponent = Icons[iconName as keyof typeof Icons] as React.ElementType;
@@ -56,7 +57,7 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
     const titleField = basic.fieldOrder?.find((f) => f.key === "title") || { key: "title", label: "职位", visible: true };
 
     const PhotoComponent = basic.photo && basic.photoConfig?.visible && (
-        <motion.div layout="position" className="shrink-0">
+        <motion.div layout="position" className="shrink-0" style={isTopRightPhoto ? { position: "absolute", top: 0, right: 0, zIndex: 1 } : undefined}>
             <div 
                 style={{ 
                     width: `${basic.photoConfig?.width || 90}px`, 
@@ -100,11 +101,11 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
 
     return (
         <SectionWrapper sectionId="basic">
-            <div className={styles.container}>
+            <div className={styles.container} style={isTopRightPhoto ? { alignItems: "stretch" } : undefined}>
                 {/* 第一排：雕塑级姓名与职位锚点 */}
-                <div className={styles.headerRow} style={{ flexDirection: photoPosition === "top" ? "column" : photoPosition === "right" ? "row-reverse" : "row" }}>
+                <div className={styles.headerRow} style={{ position: isTopRightPhoto ? "relative" : undefined, flexDirection: isTopRightPhoto ? "column" : photoPosition === "top" ? "column" : photoPosition === "right" ? "row-reverse" : "row", alignItems: isTopRightPhoto ? "stretch" : undefined, minHeight: isTopRightPhoto ? `${basic.photoConfig?.height || 90}px` : undefined }}>
                     {PhotoComponent}
-                    <div className={styles.nameTitle} style={{ alignItems: alignmentItems[nameAlignment], textAlign: nameAlignment }}>
+                    <div className={styles.nameTitle} style={{ alignItems: alignmentItems[nameAlignment], textAlign: nameAlignment, width: isTopRightPhoto ? "100%" : undefined }}>
                         {/* 瑞士美学标志性几何侧边/底部高亮线，高灵动质感 */}
                         <motion.div 
                             key={`accent-${layout}`}

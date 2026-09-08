@@ -398,7 +398,8 @@
         "photoPositions": {
           "left": "姓名左侧",
           "top": "姓名上方",
-          "right": "姓名右侧"
+          "right": "姓名右侧",
+          "topRight": "右上角"
         },
         "alignments": {
           "left": "左对齐",

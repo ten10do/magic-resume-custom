@@ -523,8 +523,8 @@ const BasicPanel: React.FC = () => {
               ]}
               onChange={updatePhotoSize}
             />
-            <div className="grid grid-cols-3 gap-2">
-              {(["left", "top", "right"] as const).map((position) => (
+            <div className="grid grid-cols-2 gap-2">
+              {(["left", "right", "top", "topRight"] as const).map((position) => (
                 <Button
                   key={position}
                   type="button"

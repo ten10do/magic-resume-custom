@@ -79,7 +79,7 @@ export interface BasicInfo {
   githubUseName: string;
   githubContributionsVisible: boolean;
   layout?: "left" | "center" | "right";
-  photoPosition?: "left" | "right" | "top";
+  photoPosition?: "left" | "right" | "top" | "topRight";
   nameAlignment?: "left" | "center" | "right";
   contactAlignment?: "left" | "center" | "right";
   nameFontSize?: number;
