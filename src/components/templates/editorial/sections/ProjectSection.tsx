@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import SectionTitle from "./SectionTitle";
 import SectionWrapper from "../../shared/SectionWrapper";
 import { Project, GlobalSettings } from "@/types/resume";
-import { normalizeRichTextContent } from "@/lib/richText";
+import { normalizeProjectDescription } from "@/lib/richText";
 import { formatDateString } from "@/lib/utils";
 import { useLocale } from "@/i18n/compat/client";
 import { getProjectLinkMeta } from "@/lib/projectLink";
@@ -58,9 +58,9 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ projects, globalSetting
             {project.description && (
               <motion.div
                 layout="position"
-                className="mt-2 text-gray-800 prose prose-sm max-w-none prose-p:my-1 [&>ul]:pl-4 [&>ul]:mt-0 [&>ul>li]:my-0.5 marker:text-black text-left"
+                className={`mt-2 text-gray-800 prose prose-sm max-w-none prose-p:my-1 [&>ul]:pl-4 [&>ul]:mt-0 [&>ul>li]:my-0.5 marker:text-black text-left ${project.descriptionBullets ? "project-description-bullets" : ""}`}
                 style={{ fontSize: `${globalSettings?.baseFontSize || 13}px`, lineHeight: globalSettings?.lineHeight || 1.6 }}
-                dangerouslySetInnerHTML={{ __html: normalizeRichTextContent(project.description) }}
+                dangerouslySetInnerHTML={{ __html: normalizeProjectDescription(project.description, project.descriptionBullets) }}
               />
             )}
           </motion.div>

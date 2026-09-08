@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import SectionTitle from "./SectionTitle";
 import SectionWrapper from "../../shared/SectionWrapper";
 import { Project, GlobalSettings } from "@/types/resume";
-import { normalizeRichTextContent } from "@/lib/richText";
+import { normalizeProjectDescription } from "@/lib/richText";
 import { formatDateString } from "@/lib/utils";
 import { useLocale } from "@/i18n/compat/client";
 import { getProjectLinkMeta } from "@/lib/projectLink";
@@ -64,9 +64,9 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ projects, globalSetting
                                 <a href={projectLink.href} target="_blank" rel="noopener noreferrer" className="underline" title={projectLink.title} style={{ fontSize: `${globalSettings?.subheaderSize || 16}px` }}>{projectLink.label}</a>
                             )}
                             {project.description && (
-                                <motion.div layout="position" className="mt-1 text-baseFont"
+                                <motion.div layout="position" className={`mt-1 text-baseFont ${project.descriptionBullets ? "project-description-bullets" : ""}`}
                                     style={{ fontSize: `${globalSettings?.baseFontSize || 14}px`, lineHeight: globalSettings?.lineHeight || 1.6 }}
-                                    dangerouslySetInnerHTML={{ __html: normalizeRichTextContent(project.description) }}
+                                    dangerouslySetInnerHTML={{ __html: normalizeProjectDescription(project.description, project.descriptionBullets) }}
                                 />
                             )}
                         </motion.div>

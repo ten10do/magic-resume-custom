@@ -512,7 +512,8 @@
         "date": "项目时间",
         "description": "项目描述",
         "link": "项目链接",
-        "linkLabel": "显示文字"
+        "linkLabel": "显示文字",
+        "descriptionBullets": "描述加项目符号"
       },
       "placeholders": {
         "name": "请输入项目名称",
@@ -523,7 +524,8 @@
         "linkLabel": "显示文字"
       },
       "hints": {
-        "linkLabel": "显示文字留空时，将自动显示域名或完整链接。链接仅支持 http:// 或 https:// 链接。"
+        "linkLabel": "显示文字留空时，将自动显示域名或完整链接。链接仅支持 http:// 或 https:// 链接。",
+        "descriptionBullets": "为普通段落逐行添加圆点，已有列表不会重复添加"
       },
       "buttons": {
         "edit": "编辑",

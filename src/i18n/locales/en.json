@@ -554,7 +554,8 @@
         "description": "Project Description",
         "technologies": "Tech Stack",
         "link": "Project Link",
-        "linkLabel": "Display Text"
+        "linkLabel": "Display Text",
+        "descriptionBullets": "Add description bullets"
       },
       "placeholders": {
         "name": "Enter project name",
@@ -566,7 +567,8 @@
         "linkLabel": "Display text"
       },
       "hints": {
-        "linkLabel": "If display text is empty, the domain or full URL will be shown automatically. Only http:// and https:// links are supported."
+        "linkLabel": "If display text is empty, the domain or full URL will be shown automatically. Only http:// and https:// links are supported.",
+        "descriptionBullets": "Add a bullet to each plain paragraph without duplicating existing lists"
       },
       "buttons": {
         "edit": "Edit",

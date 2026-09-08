@@ -238,3 +238,14 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.project-description-bullets > p {
+  position: relative;
+  padding-left: 1.25em;
+}
+
+.project-description-bullets > p::before {
+  content: "•";
+  position: absolute;
+  left: 0.25em;
+}

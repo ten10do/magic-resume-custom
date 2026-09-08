@@ -14,6 +14,7 @@ import ThemeModal from "@/components/shared/ThemeModal";
 import { useTranslations } from "@/i18n/compat/client";
 import { Project } from "@/types/resume";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 
 interface ProjectEditorProps {
   project: Project;
@@ -24,7 +25,7 @@ interface ProjectEditorProps {
 
 const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, onSave }) => {
   const t = useTranslations("workbench.projectItem");
-  const handleChange = (field: keyof Project, value: string) => {
+  const handleChange = <K extends keyof Project>(field: K, value: Project[K]) => {
     onSave({
       ...project,
       [field]: value,
@@ -97,6 +98,16 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, onSave }) => {
           type="editor"
           placeholder={t("placeholders.description")}
         />
+        <div className="flex items-center justify-between gap-4 rounded-lg border border-input bg-background/40 p-3">
+          <div>
+            <div className="text-sm font-medium text-foreground">{t("labels.descriptionBullets")}</div>
+            <p className="mt-1 text-xs text-muted-foreground">{t("hints.descriptionBullets")}</p>
+          </div>
+          <Switch
+            checked={project.descriptionBullets || false}
+            onCheckedChange={(checked) => handleChange("descriptionBullets", checked)}
+          />
+        </div>
       </div>
     </div>
   );

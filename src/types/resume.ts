@@ -123,6 +123,7 @@ export interface Project {
   visible: boolean;
   link?: string;
   linkLabel?: string;
+  descriptionBullets?: boolean;
 }
 
 export interface Certificate {

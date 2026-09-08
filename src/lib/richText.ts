@@ -119,6 +119,21 @@ export const normalizeRichTextContent = (content?: string) => {
   );
 };
 
+export const normalizeProjectDescription = (content?: string, withBullets = false) => {
+  if (!content || !withBullets || HTML_TAG_REGEX.test(content)) {
+    return normalizeRichTextContent(content);
+  }
+
+  const items = content
+    .split(/\r\n|\r|\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => `<li>${escapeHtml(line)}</li>`)
+    .join("");
+
+  return items ? `<ul>${items}</ul>` : "";
+};
+
 export const hasMeaningfulRichTextContent = (content?: string) => {
   if (!content) return false;
 
