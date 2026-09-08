@@ -240,12 +240,8 @@
 }
 
 .project-description-bullets > p {
-  position: relative;
-  padding-left: 1.25em;
-}
-
-.project-description-bullets > p::before {
-  content: "•";
-  position: absolute;
-  left: 0.25em;
+  display: list-item;
+  list-style-position: outside;
+  list-style-type: disc;
+  margin-left: 1.25em;
 }
