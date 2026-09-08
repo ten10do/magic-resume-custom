@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { PlusCircle, GripVertical, Trash2, Eye, EyeOff } from "lucide-react";
-import { Reorder, AnimatePresence, motion } from "framer-motion";
+import { Reorder, AnimatePresence, motion, useDragControls } from "framer-motion";
 import { useTranslations } from "@/i18n/compat/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,12 +79,15 @@ const CustomField: React.FC<CustomFieldProps> = ({
   onReorderEnd,
 }) => {
   const t = useTranslations("workbench.basicPanel");
+  const dragControls = useDragControls();
 
   return (
     <Reorder.Item
       value={field}
       id={field.id}
-      className="group touch-none list-none"
+      className="group list-none"
+      dragListener={false}
+      dragControls={dragControls}
       onDragEnd={onReorderEnd}
     >
       <motion.div
@@ -98,7 +101,10 @@ const CustomField: React.FC<CustomFieldProps> = ({
           !field.visible && "!opacity-60"
         )}
       >
-        <div className="flex items-center justify-center">
+        <div
+          className="flex touch-none items-center justify-center"
+          onPointerDown={(event) => dragControls.start(event)}
+        >
           <GripVertical
             className={cn(
               "w-4 h-4 cursor-grab active:cursor-grabbing",
@@ -218,6 +224,7 @@ const BasicPanel: React.FC = () => {
   });
   const basicFieldsRef = useRef(basicFields);
   const customFieldsRef = useRef(customFields);
+  const customFieldsSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const t = useTranslations("workbench.basicPanel");
   const defaultNameFontSize =
     activeResume?.templateId === "swiss"
@@ -284,6 +291,35 @@ const BasicPanel: React.FC = () => {
     customFieldsRef.current = customFields;
   }, [customFields]);
 
+  useEffect(
+    () => () => {
+      if (customFieldsSaveTimerRef.current) {
+        clearTimeout(customFieldsSaveTimerRef.current);
+      }
+    },
+    []
+  );
+
+  const saveCustomFields = useCallback(
+    (fields: CustomFieldType[], immediate = false) => {
+      if (customFieldsSaveTimerRef.current) {
+        clearTimeout(customFieldsSaveTimerRef.current);
+      }
+
+      if (immediate) {
+        customFieldsSaveTimerRef.current = null;
+        updateBasicInfo({ customFields: fields });
+        return;
+      }
+
+      customFieldsSaveTimerRef.current = setTimeout(() => {
+        updateBasicInfo({ customFields: fields });
+        customFieldsSaveTimerRef.current = null;
+      }, 200);
+    },
+    [updateBasicInfo]
+  );
+
   const handleBasicReorder = (newOrder: BasicFieldType[]) => {
     basicFieldsRef.current = newOrder;
     setBasicFields(newOrder);
@@ -332,32 +368,26 @@ const BasicPanel: React.FC = () => {
       visible: true,
       displayLabel: false,
     };
-    const updatedFields = [...customFields, fieldToAdd];
+    const updatedFields = [...customFieldsRef.current, fieldToAdd];
+    customFieldsRef.current = updatedFields;
     setCustomFields(updatedFields);
-    updateBasicInfo({
-      ...basic,
-      customFields: updatedFields,
-    });
+    saveCustomFields(updatedFields, true);
   };
 
   const updateCustomField = (updatedField: CustomFieldType) => {
-    const updatedFields = customFields.map((field) =>
+    const updatedFields = customFieldsRef.current.map((field) =>
       field.id === updatedField.id ? updatedField : field
     );
+    customFieldsRef.current = updatedFields;
     setCustomFields(updatedFields);
-    updateBasicInfo({
-      ...basic,
-      customFields: updatedFields,
-    });
+    saveCustomFields(updatedFields);
   };
 
   const deleteCustomField = (id: string) => {
-    const updatedFields = customFields.filter((field) => field.id !== id);
+    const updatedFields = customFieldsRef.current.filter((field) => field.id !== id);
+    customFieldsRef.current = updatedFields;
     setCustomFields(updatedFields);
-    updateBasicInfo({
-      ...basic,
-      customFields: updatedFields,
-    });
+    saveCustomFields(updatedFields, true);
   };
 
   const handleCustomFieldsReorder = (newOrder: CustomFieldType[]) => {
@@ -366,10 +396,8 @@ const BasicPanel: React.FC = () => {
   };
 
   const commitCustomFieldsReorder = useCallback(() => {
-    updateBasicInfo({
-      customFields: customFieldsRef.current,
-    });
-  }, [updateBasicInfo]);
+    saveCustomFields(customFieldsRef.current, true);
+  }, [saveCustomFields]);
 
   const renderBasicField = (field: BasicFieldType) => {
     const selectedIcon = basic?.icons?.[field.key] || "User";
