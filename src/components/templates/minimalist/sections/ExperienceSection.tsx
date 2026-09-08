@@ -6,6 +6,7 @@ import SectionWrapper from "../../shared/SectionWrapper";
 import { normalizeRichTextContent } from "@/lib/richText";
 import { formatDateString } from "@/lib/utils";
 import { useLocale } from "@/i18n/compat/client";
+import DateRoleHeader from "../../shared/DateRoleHeader";
 
 interface ExperienceSectionProps {
     experiences?: Experience[];
@@ -25,6 +26,9 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experiences, glob
             <AnimatePresence mode="popLayout">
                 {visibleExperiences?.map((exp) => (
                     <motion.div key={exp.id} layout="position" style={{ marginTop: `${globalSettings?.paragraphSpacing}px` }}>
+                        {globalSettings?.experienceLayout === "dateRole" ? (
+                            <DateRoleHeader title={exp.company} date={exp.date} role={exp.position} locale={locale} globalSettings={globalSettings} />
+                        ) : (<>
                         <motion.div className="flex items-center gap-2">
                             <div className={`font-bold ${flexLayout ? "" : "flex-[1.5]"}`} style={{ fontSize: `${globalSettings?.subheaderSize || 16}px` }}>
                                 {exp.company}
@@ -41,6 +45,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experiences, glob
                         {exp.position && !centerSubtitle && (
                             <motion.div className="text-subtitleFont" style={{ fontSize: `${globalSettings?.subheaderSize || 16}px` }}>{exp.position}</motion.div>
                         )}
+                        </>)}
                         {exp.details && (
                             <motion.div className="mt-1 text-baseFont" dangerouslySetInnerHTML={{ __html: normalizeRichTextContent(exp.details) }}
                                 style={{ fontSize: `${globalSettings?.baseFontSize || 14}px`, lineHeight: globalSettings?.lineHeight || 1.6 }}

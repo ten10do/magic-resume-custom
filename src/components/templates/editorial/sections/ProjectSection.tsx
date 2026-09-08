@@ -7,6 +7,7 @@ import { normalizeRichTextContent } from "@/lib/richText";
 import { formatDateString } from "@/lib/utils";
 import { useLocale } from "@/i18n/compat/client";
 import { getProjectLinkMeta } from "@/lib/projectLink";
+import DateRoleHeader from "../../shared/DateRoleHeader";
 
 interface ProjectSectionProps {
   projects: Project[];
@@ -27,6 +28,9 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ projects, globalSetting
           return (
           <motion.div key={project.id} layout="position" className="relative pb-6 last:pb-0" style={{ marginTop: `${globalSettings?.paragraphSpacing}px` }}>
             
+            {globalSettings?.projectLayout === "dateRole" ? (
+              <DateRoleHeader title={project.name} date={project.date} role={project.role} locale={locale} globalSettings={globalSettings} />
+            ) : (<>
             <motion.h4 layout="position" className="font-bold text-black" style={{ fontSize: `${globalSettings?.subheaderSize || 18}px`, lineHeight: "1.2" }}>
               {project.name}
             </motion.h4>
@@ -44,6 +48,12 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ projects, globalSetting
                 </>
               )}
             </motion.div>
+            </>)}
+            {projectLink && globalSettings?.projectLayout === "dateRole" && (
+              <a href={projectLink.href} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-black transition-colors" title={projectLink.title}>
+                {projectLink.label}
+              </a>
+            )}
             
             {project.description && (
               <motion.div

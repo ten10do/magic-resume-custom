@@ -10,7 +10,7 @@ import { generateUUID } from "@/utils/uuid";
 
 const ExperiencePanel = () => {
   const t = useTranslations("workbench.experiencePanel");
-  const { activeResume, updateExperience, updateExperienceBatch } =
+  const { activeResume, updateExperience, updateExperienceBatch, updateGlobalSettings } =
     useResumeStore();
   const { experience = [] } = activeResume || {};
   const handleCreateProject = () => {
@@ -32,6 +32,26 @@ const ExperiencePanel = () => {
         "bg-card border-border"
       )}
     >
+      <div className="space-y-2 rounded-lg border border-border bg-card p-3">
+        <div>
+          <div className="text-sm font-medium">{t("layout.title")}</div>
+          <p className="mt-1 text-xs text-muted-foreground">{t("layout.description")}</p>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {(["standard", "dateRole"] as const).map((layout) => (
+            <Button
+              key={layout}
+              type="button"
+              size="sm"
+              variant={(activeResume?.globalSettings?.experienceLayout || "standard") === layout ? "default" : "outline"}
+              onClick={() => updateGlobalSettings({ experienceLayout: layout })}
+            >
+              {t(`layout.options.${layout}`)}
+            </Button>
+          ))}
+        </div>
+      </div>
+
       <Reorder.Group
         axis="y"
         values={experience}

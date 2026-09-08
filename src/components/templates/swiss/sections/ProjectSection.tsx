@@ -8,6 +8,7 @@ import { normalizeRichTextContent } from "@/lib/richText";
 import { formatDateString } from "@/lib/utils";
 import { useLocale } from "@/i18n/compat/client";
 import { getProjectLinkMeta } from "@/lib/projectLink";
+import DateRoleHeader from "../../shared/DateRoleHeader";
 
 interface ProjectSectionProps {
     projects: Project[];
@@ -33,6 +34,17 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ projects, globalSetting
 
                         return (
                             <motion.div key={project.id} layout="position" className="group">
+                                {globalSettings?.projectLayout === "dateRole" ? (
+                                    <>
+                                    <DateRoleHeader title={project.name} date={project.date} role={project.role} locale={locale} globalSettings={globalSettings} />
+                                    {projectLink && (
+                                        <a href={projectLink.href} target="_blank" rel="noopener noreferrer" className="mt-1 inline-flex items-center gap-1 text-[11px] text-slate-500" title={projectLink.title}>
+                                            <Icons.ExternalLink className="h-3 w-3 shrink-0" style={{ color: themeColor }} />
+                                            <span>{projectLink.label}</span>
+                                        </a>
+                                    )}
+                                    </>
+                                ) : (<>
                                 {/* 项目排版头部 */}
                                 <div className="flex items-baseline justify-between gap-3">
                                     <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1">
@@ -81,6 +93,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ projects, globalSetting
                                         {project.role}
                                     </div>
                                 )}
+                                </>)}
 
                                 {/* 项目描述内容 */}
                                 {project.description && (

@@ -433,6 +433,14 @@
     "experiencePanel": {
       "title": "工作经历",
       "addButton": "添加工作经历",
+      "layout": {
+        "title": "标题排版",
+        "description": "调整时间与职位的排列方式",
+        "options": {
+          "standard": "默认分栏",
+          "dateRole": "时间｜职位"
+        }
+      },
       "defaultProject": {
         "company": "某科技有限公司",
         "position": "高级前端工程师",
@@ -473,6 +481,14 @@
     "projectPanel": {
       "title": "项目经历",
       "addButton": "添加项目",
+      "layout": {
+        "title": "标题排版",
+        "description": "调整时间与项目角色的排列方式",
+        "options": {
+          "standard": "默认分栏",
+          "dateRole": "时间｜角色"
+        }
+      },
       "defaultProject": {
         "name": "个人项目",
         "description": "项目描述",

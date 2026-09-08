@@ -146,6 +146,8 @@ export type GlobalSettings = {
   flexibleHeaderLayout?: boolean | undefined;
   autoOnePage?: boolean | undefined;
   educationLayout?: "standard" | "singleLine" | undefined;
+  experienceLayout?: "standard" | "dateRole" | undefined;
+  projectLayout?: "standard" | "dateRole" | undefined;
 };
 
 export interface ResumeTheme {

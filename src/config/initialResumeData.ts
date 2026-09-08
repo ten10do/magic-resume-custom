@@ -12,6 +12,8 @@ const initialGlobalSettings: GlobalSettings = {
   themeColor: "#000000",
   centerSubtitle: true,
   educationLayout: "standard",
+  experienceLayout: "standard",
+  projectLayout: "standard",
 };
 
 export const initialResumeState = {

@@ -6,6 +6,7 @@ import SectionWrapper from "../../shared/SectionWrapper";
 import { normalizeRichTextContent } from "@/lib/richText";
 import { formatDateString } from "@/lib/utils";
 import { useLocale } from "@/i18n/compat/client";
+import DateRoleHeader from "../../shared/DateRoleHeader";
 
 interface ExperienceSectionProps {
     experiences?: Experience[];
@@ -26,6 +27,9 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experiences, glob
                 <div className="flex flex-col gap-6" style={{ marginTop: `${globalSettings?.paragraphSpacing || 16}px` }}>
                     {visibleExperiences?.map((exp) => (
                         <motion.div key={exp.id} layout="position" className="group">
+                            {globalSettings?.experienceLayout === "dateRole" ? (
+                                <DateRoleHeader title={exp.company} date={exp.date} role={exp.position} locale={locale} globalSettings={globalSettings} />
+                            ) : (<>
                             {/* 不对称网格对齐头部 */}
                             <div className="flex items-baseline justify-between gap-3">
                                 <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -60,6 +64,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experiences, glob
                                     {exp.position}
                                 </div>
                             )}
+                            </>)}
 
                             {/* 详情内容 */}
                             {exp.details && (

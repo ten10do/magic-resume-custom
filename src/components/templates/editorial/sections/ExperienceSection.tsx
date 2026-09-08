@@ -7,6 +7,7 @@ import SectionWrapper from "../../shared/SectionWrapper";
 import { normalizeRichTextContent } from "@/lib/richText";
 import { formatDateString } from "@/lib/utils";
 import { useLocale } from "@/i18n/compat/client";
+import DateRoleHeader from "../../shared/DateRoleHeader";
 
 interface ExperienceSectionProps {
   experiences?: Experience[];
@@ -28,6 +29,9 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experiences, glob
             {/* Timeline Dot */}
             {showTimeline && <div className="absolute left-[-2.25px] top-2.5 w-1.5 h-1.5 bg-black rounded-full" />}
             
+            {globalSettings?.experienceLayout === "dateRole" ? (
+              <DateRoleHeader title={exp.company} date={exp.date} role={exp.position} locale={locale} globalSettings={globalSettings} />
+            ) : (<>
             {/* Title: Company as Priority */}
             <motion.h4 layout="position" className="font-bold text-black" style={{ fontSize: `${globalSettings?.subheaderSize || 18}px`, lineHeight: "1.2" }}>
               {exp.company}
@@ -39,6 +43,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experiences, glob
               {exp.position && " • "}
               {formatDateString(exp.date, locale)}
             </motion.div>
+            </>)}
             
             {/* Details */}
             {exp.details && (

@@ -10,7 +10,7 @@ import { generateUUID } from "@/utils/uuid";
 
 const ProjectPanel = () => {
   const t = useTranslations("workbench.projectPanel");
-  const { activeResume, updateProjects, updateProjectsBatch } =
+  const { activeResume, updateProjects, updateProjectsBatch, updateGlobalSettings } =
     useResumeStore();
   const { projects = [] } = activeResume || {};
   const handleCreateProject = () => {
@@ -32,6 +32,26 @@ const ProjectPanel = () => {
         "bg-card border-border",
       )}
     >
+      <div className="space-y-2 rounded-lg border border-border bg-card p-3">
+        <div>
+          <div className="text-sm font-medium">{t("layout.title")}</div>
+          <p className="mt-1 text-xs text-muted-foreground">{t("layout.description")}</p>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {(["standard", "dateRole"] as const).map((layout) => (
+            <Button
+              key={layout}
+              type="button"
+              size="sm"
+              variant={(activeResume?.globalSettings?.projectLayout || "standard") === layout ? "default" : "outline"}
+              onClick={() => updateGlobalSettings({ projectLayout: layout })}
+            >
+              {t(`layout.options.${layout}`)}
+            </Button>
+          ))}
+        </div>
+      </div>
+
       <Reorder.Group
         axis="y"
         values={projects}

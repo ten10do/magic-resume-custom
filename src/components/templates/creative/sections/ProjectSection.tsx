@@ -7,6 +7,7 @@ import { normalizeRichTextContent } from "@/lib/richText";
 import { formatDateString } from "@/lib/utils";
 import { useLocale } from "@/i18n/compat/client";
 import { getProjectLinkMeta } from "@/lib/projectLink";
+import DateRoleHeader from "../../shared/DateRoleHeader";
 
 interface ProjectSectionProps {
     projects: Project[];
@@ -32,6 +33,9 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ projects, globalSetting
 
                         return (
                         <motion.div key={project.id} style={{ marginTop: `${globalSettings?.paragraphSpacing}px` }}>
+                            {globalSettings?.projectLayout === "dateRole" ? (
+                                <DateRoleHeader title={project.name} date={project.date} role={project.role} locale={locale} globalSettings={globalSettings} />
+                            ) : (<>
                             <motion.div className="flex items-center gap-2">
                                 <div className={`flex items-center gap-2 ${flexLayout ? "" : "flex-[1.5]"}`}>
                                     <h3 className="font-bold" style={{ fontSize: `${globalSettings?.subheaderSize || 16}px` }}>{project.name}</h3>
@@ -55,7 +59,8 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ projects, globalSetting
                             {project.role && !centerSubtitle && (
                                 <motion.div layout="position" className="text-subtitleFont" style={{ fontSize: `${globalSettings?.subheaderSize || 16}px` }}>{project.role}</motion.div>
                             )}
-                            {projectLink && centerSubtitle && (
+                            </>)}
+                            {projectLink && (centerSubtitle || globalSettings?.projectLayout === "dateRole") && (
                                 <a href={projectLink.href} target="_blank" rel="noopener noreferrer" className="underline" title={projectLink.title} style={{ fontSize: `${globalSettings?.subheaderSize || 16}px` }}>{projectLink.label}</a>
                             )}
                             {project.description && (

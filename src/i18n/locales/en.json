@@ -476,6 +476,14 @@
     "experiencePanel": {
       "title": "Work Experience",
       "addButton": "Add Work Experience",
+      "layout": {
+        "title": "Header layout",
+        "description": "Adjust how the date and position are arranged",
+        "options": {
+          "standard": "Standard columns",
+          "dateRole": "Date | Position"
+        }
+      },
       "defaultProject": {
         "company": "Tech Company Ltd.",
         "position": "Senior Frontend Engineer",
@@ -516,6 +524,14 @@
     "projectPanel": {
       "title": "Project Experience",
       "addButton": "Add Project",
+      "layout": {
+        "title": "Header layout",
+        "description": "Adjust how the date and project role are arranged",
+        "options": {
+          "standard": "Standard columns",
+          "dateRole": "Date | Role"
+        }
+      },
       "defaultProject": {
         "name": "Personal Project",
         "description": "Project Description",
