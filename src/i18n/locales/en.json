@@ -421,6 +421,28 @@
       "basicField": "Basic",
       "customField": "Custom",
       "layout": "Align",
+      "appearance": {
+        "title": "Profile Layout",
+        "description": "Adjust the photo, name, title, and contact details independently",
+        "photo": "Photo",
+        "width": "Width (px)",
+        "height": "Height (px)",
+        "nameAndTitle": "Name and title",
+        "nameSize": "Name size (px)",
+        "titleSize": "Title size (px)",
+        "contacts": "Contact details",
+        "contactSize": "Contact size (px)",
+        "photoPositions": {
+          "left": "Left of name",
+          "top": "Above name",
+          "right": "Right of name"
+        },
+        "alignments": {
+          "left": "Left",
+          "center": "Center",
+          "right": "Right"
+        }
+      },
       "customFields": {
         "placeholders": {
           "label": "Label",

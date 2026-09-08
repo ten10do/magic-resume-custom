@@ -12,7 +12,7 @@ import Field from "../Field";
 import { cn } from "@/lib/utils";
 import { DEFAULT_FIELD_ORDER } from "@/config";
 import { useResumeStore } from "@/store/useResumeStore";
-import { BasicFieldType, CustomFieldType } from "@/types/resume";
+import { BasicFieldType, CustomFieldType, DEFAULT_CONFIG } from "@/types/resume";
 import { generateUUID } from "@/utils/uuid";
 interface CustomFieldProps {
   field: CustomFieldType;
@@ -175,6 +175,41 @@ const BasicPanel: React.FC = () => {
   const basicFieldsRef = useRef(basicFields);
   const customFieldsRef = useRef(customFields);
   const t = useTranslations("workbench.basicPanel");
+  const defaultNameFontSize =
+    activeResume?.templateId === "swiss"
+      ? 38
+      : activeResume?.templateId === "editorial"
+        ? (activeResume.globalSettings?.headerSize || 20) * 2
+        : 30;
+  const defaultTitleFontSize =
+    activeResume?.templateId === "swiss"
+      ? 12
+      : activeResume?.templateId === "editorial"
+        ? activeResume.globalSettings?.subheaderSize || 16
+        : 18;
+  const defaultContactFontSize = activeResume?.globalSettings?.baseFontSize || 14;
+
+  const updateNumberSetting = (
+    key: "nameFontSize" | "titleFontSize" | "contactFontSize",
+    value: string,
+    min: number,
+    max: number
+  ) => {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return;
+    updateBasicInfo({ [key]: Math.min(max, Math.max(min, number)) });
+  };
+
+  const updatePhotoSize = (key: "width" | "height", value: string) => {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return;
+    updateBasicInfo({
+      photoConfig: {
+        ...(basic?.photoConfig || DEFAULT_CONFIG),
+        [key]: Math.min(200, Math.max(24, number)),
+      },
+    });
+  };
 
   useEffect(() => {
     basicFieldsRef.current = basicFields;
@@ -393,6 +428,135 @@ const BasicPanel: React.FC = () => {
                 })
               }
             />
+          </div>
+        </div>
+
+        <div className="space-y-4 rounded-xl border border-border bg-card p-4">
+          <div>
+            <h2 className="text-lg font-medium">{t("appearance.title")}</h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t("appearance.description")}
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium">{t("appearance.photo")}</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <label className="space-y-1 text-xs text-muted-foreground">
+                <span>{t("appearance.width")}</span>
+                <Input
+                  type="number"
+                  min={24}
+                  max={200}
+                  value={basic?.photoConfig?.width || 90}
+                  onChange={(event) => updatePhotoSize("width", event.target.value)}
+                />
+              </label>
+              <label className="space-y-1 text-xs text-muted-foreground">
+                <span>{t("appearance.height")}</span>
+                <Input
+                  type="number"
+                  min={24}
+                  max={200}
+                  value={basic?.photoConfig?.height || 120}
+                  onChange={(event) => updatePhotoSize("height", event.target.value)}
+                />
+              </label>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {(["left", "top", "right"] as const).map((position) => (
+                <Button
+                  key={position}
+                  type="button"
+                  size="sm"
+                  variant={
+                    (basic?.photoPosition ||
+                      (basic?.layout === "right"
+                        ? "right"
+                        : basic?.layout === "center"
+                          ? "top"
+                          : "left")) === position
+                      ? "default"
+                      : "outline"
+                  }
+                  onClick={() => updateBasicInfo({ photoPosition: position })}
+                >
+                  {t(`appearance.photoPositions.${position}`)}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-3 border-t pt-3">
+            <h3 className="text-sm font-medium">{t("appearance.nameAndTitle")}</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <label className="space-y-1 text-xs text-muted-foreground">
+                <span>{t("appearance.nameSize")}</span>
+                <Input
+                  type="number"
+                  min={20}
+                  max={56}
+                  value={basic?.nameFontSize || defaultNameFontSize}
+                  onChange={(event) =>
+                    updateNumberSetting("nameFontSize", event.target.value, 20, 56)
+                  }
+                />
+              </label>
+              <label className="space-y-1 text-xs text-muted-foreground">
+                <span>{t("appearance.titleSize")}</span>
+                <Input
+                  type="number"
+                  min={10}
+                  max={32}
+                  value={basic?.titleFontSize || defaultTitleFontSize}
+                  onChange={(event) =>
+                    updateNumberSetting("titleFontSize", event.target.value, 10, 32)
+                  }
+                />
+              </label>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {(["left", "center", "right"] as const).map((alignment) => (
+                <Button
+                  key={alignment}
+                  type="button"
+                  size="sm"
+                  variant={(basic?.nameAlignment || basic?.layout || "left") === alignment ? "default" : "outline"}
+                  onClick={() => updateBasicInfo({ nameAlignment: alignment })}
+                >
+                  {t(`appearance.alignments.${alignment}`)}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-3 border-t pt-3">
+            <h3 className="text-sm font-medium">{t("appearance.contacts")}</h3>
+            <label className="block space-y-1 text-xs text-muted-foreground">
+              <span>{t("appearance.contactSize")}</span>
+              <Input
+                type="number"
+                min={10}
+                max={24}
+                value={basic?.contactFontSize || defaultContactFontSize}
+                onChange={(event) =>
+                  updateNumberSetting("contactFontSize", event.target.value, 10, 24)
+                }
+              />
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {(["left", "center", "right"] as const).map((alignment) => (
+                <Button
+                  key={alignment}
+                  type="button"
+                  size="sm"
+                  variant={(basic?.contactAlignment || basic?.layout || "left") === alignment ? "default" : "outline"}
+                  onClick={() => updateBasicInfo({ contactAlignment: alignment })}
+                >
+                  {t(`appearance.alignments.${alignment}`)}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
 

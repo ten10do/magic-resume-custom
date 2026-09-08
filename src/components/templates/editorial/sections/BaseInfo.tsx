@@ -15,6 +15,11 @@ interface BaseInfoProps {
 const BaseInfo: React.FC<BaseInfoProps> = ({ basic, globalSettings }) => {
   const locale = useLocale();
   const t = useTranslations("workbench");
+  const layout = basic.layout || "left";
+  const photoPosition = basic.photoPosition || (layout === "right" ? "right" : layout === "center" ? "top" : "left");
+  const nameAlignment = basic.nameAlignment || layout;
+  const contactAlignment = basic.contactAlignment || layout;
+  const alignmentItems = { left: "flex-start", center: "center", right: "flex-end" } as const;
 
   const getOrderedFields = React.useMemo(() => {
     if (!basic.fieldOrder) {
@@ -66,13 +71,19 @@ const BaseInfo: React.FC<BaseInfoProps> = ({ basic, globalSettings }) => {
   return (
     <SectionWrapper sectionId="basic" className=" w-full">
       <div className="flex flex-col w-full">
-        <div className="flex items-center justify-between gap-6">
-          <div className="flex-1 min-w-0">
+        <div
+          className="flex justify-between gap-6"
+          style={{
+            flexDirection: photoPosition === "top" ? "column-reverse" : photoPosition === "left" ? "row-reverse" : "row",
+            alignItems: photoPosition === "top" ? alignmentItems[nameAlignment] : "center",
+          }}
+        >
+          <div className="flex-1 min-w-0" style={{ textAlign: nameAlignment }}>
             {basic.name && nameField.visible !== false && (
               <motion.h1
                 layout="position"
                 className="font-bold tracking-widest whitespace-normal break-normal [overflow-wrap:normal]"
-                style={{ color: globalSettings?.themeColor || "#000", fontSize: `${(globalSettings?.headerSize || 20) * 2}px`, lineHeight: "1.1", marginBottom: "8px" }}
+                style={{ color: globalSettings?.themeColor || "#000", fontSize: `${basic.nameFontSize || (globalSettings?.headerSize || 20) * 2}px`, lineHeight: "1.1", marginBottom: "8px" }}
               >
                 {basic.name}
               </motion.h1>
@@ -98,18 +109,18 @@ const BaseInfo: React.FC<BaseInfoProps> = ({ basic, globalSettings }) => {
 
         <div className="flex justify-between items-start mt-10 w-full">
           {basic.title && titleField.visible !== false && (
-            <div className="flex-1 min-w-[100px] shrink-0">
+            <div className="flex-1 min-w-[100px] shrink-0" style={{ textAlign: nameAlignment }}>
               <motion.h2
                 layout="position"
                 className="font-normal tracking-wide text-gray-700 whitespace-normal break-normal [overflow-wrap:normal]"
-                style={{ fontSize: `${globalSettings?.subheaderSize || 16}px`, lineHeight: "1.3" }}
+                style={{ fontSize: `${basic.titleFontSize || globalSettings?.subheaderSize || 16}px`, lineHeight: "1.3" }}
               >
                 {basic.title}
               </motion.h2>
             </div>
           )}
 
-          <motion.div layout="position" className="flex flex-wrap items-center justify-end gap-x-6 gap-y-2 uppercase tracking-[0.05em] text-gray-500 w-[80%] flex-shrink-0" style={{ fontSize: `${globalSettings?.baseFontSize || 14}px` }}>
+          <motion.div layout="position" className="flex flex-wrap items-center gap-x-6 gap-y-2 uppercase tracking-[0.05em] text-gray-500 w-[80%] flex-shrink-0" style={{ fontSize: `${basic.contactFontSize || globalSettings?.baseFontSize || 14}px`, justifyContent: contactAlignment === "left" ? "flex-start" : contactAlignment === "right" ? "flex-end" : "center", textAlign: contactAlignment }}>
             {allFields.map((item) => {
               const customFieldHref =
                 item.custom && "href" in item && typeof item.href === "string"

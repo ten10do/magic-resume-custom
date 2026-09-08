@@ -22,6 +22,10 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
     const locale = useLocale();
     const useIconMode = globalSettings?.useIconMode ?? false;
     const layout = basic?.layout || "left";
+    const photoPosition = basic.photoPosition || (layout === "right" ? "right" : layout === "center" ? "top" : "left");
+    const nameAlignment = basic.nameAlignment || layout;
+    const contactAlignment = basic.contactAlignment || layout;
+    const alignmentItems = { left: "flex-start", center: "center", right: "flex-end" } as const;
 
     const getIcon = (iconName: string | undefined) => {
         const IconComponent = Icons[iconName as keyof typeof Icons] as React.ElementType;
@@ -71,19 +75,19 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
     return (
         <SectionWrapper sectionId="basic">
             <div className={styles.container}>
-                <div className={styles.leftContent}>
+                <div className={styles.leftContent} style={{ flexDirection: photoPosition === "top" ? "column" : photoPosition === "right" ? "row-reverse" : "row" }}>
                     {PhotoComponent}
-                    <div className={cn("flex flex-col", styles.nameTitle)} style={{ color: "#fff" }}>
+                    <div className={cn("flex flex-col", styles.nameTitle)} style={{ color: "#fff", alignItems: alignmentItems[nameAlignment], textAlign: nameAlignment }}>
                         {nameField.visible !== false && basic[nameField.key] && (
-                            <motion.h1 layout="position" className="font-bold whitespace-normal break-normal [overflow-wrap:normal]" style={{ fontSize: "30px", color: "#fff" }}>{basic[nameField.key] as string}</motion.h1>
+                            <motion.h1 layout="position" className="font-bold whitespace-normal break-normal [overflow-wrap:normal]" style={{ fontSize: `${basic.nameFontSize || 30}px`, color: "#fff" }}>{basic[nameField.key] as string}</motion.h1>
                         )}
                         {titleField.visible !== false && basic[titleField.key] && (
-                            <motion.h2 layout="position" className="whitespace-normal break-normal [overflow-wrap:normal]" style={{ fontSize: "18px", color: "#fff" }}>{basic[titleField.key] as string}</motion.h2>
+                            <motion.h2 layout="position" className="whitespace-normal break-normal [overflow-wrap:normal]" style={{ fontSize: `${basic.titleFontSize || 18}px`, color: "#fff" }}>{basic[titleField.key] as string}</motion.h2>
                         )}
                     </div>
                 </div>
                 <motion.div layout="position" className={styles.fields}
-                    style={{ fontSize: `${globalSettings?.baseFontSize || 14}px`, color: "#fff", maxWidth: layout === "center" ? "none" : "600px" }}>
+                    style={{ fontSize: `${basic.contactFontSize || globalSettings?.baseFontSize || 14}px`, color: "#fff", maxWidth: layout === "center" ? "none" : "600px", justifyItems: alignmentItems[contactAlignment], justifyContent: contactAlignment === "left" ? "flex-start" : contactAlignment === "right" ? "flex-end" : "center", textAlign: contactAlignment }}>
                     {allFields.map((item) => {
                         const customFieldHref = item.custom && "href" in item && typeof item.href === "string" ? item.href : null;
 

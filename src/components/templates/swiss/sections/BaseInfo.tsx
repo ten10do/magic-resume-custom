@@ -21,6 +21,10 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
     const useIconMode = globalSettings?.useIconMode ?? false;
     const layout = basic?.layout || "left";
     const themeColor = globalSettings?.themeColor || "#E31C24";
+    const photoPosition = basic.photoPosition || (layout === "right" ? "right" : layout === "center" ? "top" : "left");
+    const nameAlignment = basic.nameAlignment || layout;
+    const contactAlignment = basic.contactAlignment || layout;
+    const alignmentItems = { left: "flex-start", center: "center", right: "flex-end" } as const;
 
     const getIcon = (iconName: string | undefined) => {
         const IconComponent = Icons[iconName as keyof typeof Icons] as React.ElementType;
@@ -98,9 +102,9 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
         <SectionWrapper sectionId="basic">
             <div className={styles.container}>
                 {/* 第一排：雕塑级姓名与职位锚点 */}
-                <div className={styles.headerRow}>
+                <div className={styles.headerRow} style={{ flexDirection: photoPosition === "top" ? "column" : photoPosition === "right" ? "row-reverse" : "row" }}>
                     {PhotoComponent}
-                    <div className={styles.nameTitle}>
+                    <div className={styles.nameTitle} style={{ alignItems: alignmentItems[nameAlignment], textAlign: nameAlignment }}>
                         {/* 瑞士美学标志性几何侧边/底部高亮线，高灵动质感 */}
                         <motion.div 
                             key={`accent-${layout}`}
@@ -112,7 +116,7 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
                             <motion.h1 
                                 layout="position" 
                                 className="font-black tracking-tight whitespace-normal break-normal [overflow-wrap:normal] leading-none"
-                                style={{ fontSize: "38px", color: themeColor }}
+                                style={{ fontSize: `${basic.nameFontSize || 38}px`, color: themeColor }}
                             >
                                 {basic[nameField.key] as string}
                             </motion.h1>
@@ -120,7 +124,8 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
                         {titleField.visible !== false && basic[titleField.key] && (
                             <motion.h2 
                                 layout="position" 
-                                className="whitespace-normal break-normal [overflow-wrap:normal] font-bold tracking-widest mt-2.5 text-slate-400 uppercase text-[12px]"
+                                className="whitespace-normal break-normal [overflow-wrap:normal] font-bold tracking-widest mt-2.5 text-slate-400 uppercase"
+                                style={{ fontSize: `${basic.titleFontSize || 12}px` }}
                             >
                                 {basic[titleField.key] as string}
                             </motion.h2>
@@ -132,7 +137,7 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
                 <motion.div 
                     layout="position" 
                     className={styles.cardWrapper}
-                    style={{ fontSize: `${globalSettings?.baseFontSize || 13}px` }}
+                    style={{ fontSize: `${basic.contactFontSize || globalSettings?.baseFontSize || 13}px`, justifyContent: contactAlignment === "left" ? "flex-start" : contactAlignment === "right" ? "flex-end" : "center", textAlign: contactAlignment }}
                 >
                     {allFields.map((item) => {
                         const customFieldHref = item.custom && "href" in item && typeof item.href === "string" ? item.href : null;

@@ -79,6 +79,12 @@ export interface BasicInfo {
   githubUseName: string;
   githubContributionsVisible: boolean;
   layout?: "left" | "center" | "right";
+  photoPosition?: "left" | "right" | "top";
+  nameAlignment?: "left" | "center" | "right";
+  contactAlignment?: "left" | "center" | "right";
+  nameFontSize?: number;
+  titleFontSize?: number;
+  contactFontSize?: number;
 }
 
 export interface Education {

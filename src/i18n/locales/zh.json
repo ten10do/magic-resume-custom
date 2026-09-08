@@ -379,6 +379,28 @@
       "layoutCenter": "居中",
       "layoutRight": "居右",
       "avatar": "头像",
+      "appearance": {
+        "title": "基础信息排版",
+        "description": "分别调整照片、姓名与联系方式的尺寸和位置",
+        "photo": "照片",
+        "width": "宽度（px）",
+        "height": "高度（px）",
+        "nameAndTitle": "姓名与职位",
+        "nameSize": "姓名字号（px）",
+        "titleSize": "职位字号（px）",
+        "contacts": "联系方式",
+        "contactSize": "联系方式字号（px）",
+        "photoPositions": {
+          "left": "姓名左侧",
+          "top": "姓名上方",
+          "right": "姓名右侧"
+        },
+        "alignments": {
+          "left": "左对齐",
+          "center": "居中",
+          "right": "右对齐"
+        }
+      },
       "customFields": {
         "placeholders": {
           "label": "标签",
