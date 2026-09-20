@@ -81,7 +81,7 @@ const BaseInfo = ({ basic = {} as BasicInfo, globalSettings, template }: BaseInf
                             <motion.h1 layout="position" className="font-bold whitespace-normal break-normal [overflow-wrap:normal]" style={{ fontSize: `${basic.nameFontSize || 30}px`, color: globalSettings?.themeColor }}>{basic[nameField.key] as string}</motion.h1>
                         )}
                         {titleField.visible !== false && basic[titleField.key] && (
-                            <motion.h2 layout="position" className="whitespace-normal break-normal [overflow-wrap:normal]" style={{ fontSize: `${basic.titleFontSize || 18}px` }}>{basic[titleField.key] as string}</motion.h2>
+                            <motion.h2 layout="position" className="mt-1 whitespace-normal break-normal [overflow-wrap:normal]" style={{ fontSize: `${basic.titleFontSize || 18}px` }}>{basic[titleField.key] as string}</motion.h2>
                         )}
                     </div>
                 </div>

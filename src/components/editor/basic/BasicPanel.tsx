@@ -462,7 +462,7 @@ const BasicPanel: React.FC = () => {
                     [field.key]: value,
                   })
                 }
-                placeholder={`请输入${field.label}`}
+                placeholder={`请输入${field.key === "title" ? t("basicFields.title") : field.label}`}
                 type={field.type}
               />
             </div>

@@ -385,9 +385,9 @@
         "reset": "恢复默认",
         "photo": "照片",
         "photoSize": "照片大小",
-        "nameAndTitle": "姓名与职位",
+        "nameAndTitle": "姓名与求职目标",
         "nameSize": "姓名大小",
-        "titleSize": "职位大小",
+        "titleSize": "求职目标大小",
         "contacts": "联系方式",
         "contactSize": "联系方式大小",
         "sizes": {
@@ -417,7 +417,7 @@
       },
       "basicFields": {
         "name": "姓名",
-        "title": "职位",
+        "title": "求职目标",
         "email": "邮箱",
         "phone": "电话",
         "website": "个人网站",

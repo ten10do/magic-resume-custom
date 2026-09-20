@@ -427,9 +427,9 @@
         "reset": "Reset",
         "photo": "Photo",
         "photoSize": "Photo size",
-        "nameAndTitle": "Name and title",
+        "nameAndTitle": "Name and job objective",
         "nameSize": "Name size",
-        "titleSize": "Title size",
+        "titleSize": "Job objective size",
         "contacts": "Contact details",
         "contactSize": "Contact size",
         "sizes": {
@@ -459,7 +459,7 @@
       },
       "basicFields": {
         "name": "Name",
-        "title": "Title",
+        "title": "Job objective",
         "email": "Email",
         "phone": "Phone",
         "website": "Website",

@@ -3,7 +3,7 @@ import { BasicFieldType } from "@/types/resume";
 export const DEFAULT_FIELD_ORDER: BasicFieldType[] = [
   { id: "1", key: "name", label: "姓名", type: "text", visible: true },
 
-  { id: "2", key: "title", label: "职位", type: "text", visible: true },
+  { id: "2", key: "title", label: "求职目标", type: "text", visible: true },
   {
     id: "3",
     key: "employementStatus",

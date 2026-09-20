@@ -91,6 +91,15 @@ const BaseInfo: React.FC<BaseInfoProps> = ({ basic, globalSettings }) => {
                 {basic.name}
               </motion.h1>
             )}
+            {basic.title && titleField.visible !== false && (
+              <motion.h2
+                layout="position"
+                className="font-normal tracking-wide text-gray-700 whitespace-normal break-normal [overflow-wrap:normal]"
+                style={{ fontSize: `${basic.titleFontSize || globalSettings?.subheaderSize || 16}px`, lineHeight: "1.3" }}
+              >
+                {basic.title}
+              </motion.h2>
+            )}
           </div>
           {showPhoto && (
             <motion.div layout="position" className="shrink-0" style={isTopRightPhoto ? { position: "absolute", top: 0, right: 0, zIndex: 1 } : undefined}>
@@ -110,20 +119,8 @@ const BaseInfo: React.FC<BaseInfoProps> = ({ basic, globalSettings }) => {
 
         <div className="w-full h-[3px] my-4" style={{ backgroundColor: globalSettings?.themeColor || "#000" }} />
 
-        <div className="flex justify-between items-start mt-10 w-full" style={isTopRightPhoto ? { flexDirection: "column", alignItems: "stretch", gap: "12px", marginTop: "16px" } : undefined}>
-          {basic.title && titleField.visible !== false && (
-            <div className="flex-1 min-w-[100px] shrink-0" style={{ textAlign: nameAlignment, width: isTopRightPhoto ? "100%" : undefined }}>
-              <motion.h2
-                layout="position"
-                className="font-normal tracking-wide text-gray-700 whitespace-normal break-normal [overflow-wrap:normal]"
-                style={{ fontSize: `${basic.titleFontSize || globalSettings?.subheaderSize || 16}px`, lineHeight: "1.3" }}
-              >
-                {basic.title}
-              </motion.h2>
-            </div>
-          )}
-
-          <motion.div layout="position" className="flex flex-wrap items-center gap-x-6 gap-y-2 uppercase tracking-[0.05em] text-gray-500 w-[80%] flex-shrink-0" style={{ fontSize: `${basic.contactFontSize || globalSettings?.baseFontSize || 14}px`, justifyContent: contactAlignment === "left" ? "flex-start" : contactAlignment === "right" ? "flex-end" : "center", textAlign: contactAlignment, width: isTopRightPhoto ? "100%" : undefined }}>
+        <div className="flex items-start mt-10 w-full" style={isTopRightPhoto ? { marginTop: "16px" } : undefined}>
+          <motion.div layout="position" className="flex w-full flex-wrap items-center gap-x-6 gap-y-2 uppercase tracking-[0.05em] text-gray-500" style={{ fontSize: `${basic.contactFontSize || globalSettings?.baseFontSize || 14}px`, justifyContent: contactAlignment === "left" ? "flex-start" : contactAlignment === "right" ? "flex-end" : "center", textAlign: contactAlignment }}>
             {allFields.map((item) => {
               const customFieldHref =
                 item.custom && "href" in item && typeof item.href === "string"
